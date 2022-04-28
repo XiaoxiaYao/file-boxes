@@ -10,6 +10,7 @@ import {
   Request,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { OptionalJwtAuthGuard } from 'src/auth/guards/optional-jwt-auth.guard';
 import ParamsWithId from 'src/utils/paramsWithId';
 import { BoxesService } from './boxes.service';
 import { CreateBoxDto } from './dto/create-box.dto';
@@ -20,6 +21,7 @@ import { UpdateBoxDto } from './dto/update-box.dto';
 export class BoxesController {
   constructor(private readonly boxesService: BoxesService) {}
 
+  @UseGuards(OptionalJwtAuthGuard)
   @Post()
   create(@Body() createBoxDto: CreateBoxDto, @Request() req) {
     return this.boxesService.create(createBoxDto, req.user);

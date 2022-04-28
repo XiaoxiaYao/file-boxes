@@ -18,8 +18,8 @@ export class BoxesService {
     return createdBox.save();
   }
 
-  findAll() {
-    return `This action returns all boxes`;
+  async findAll() {
+    return this.boxModel.find().populate('owner', '-password');
   }
 
   findOne(id: number) {
