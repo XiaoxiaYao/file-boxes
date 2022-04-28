@@ -8,15 +8,13 @@ export class AuthService {
   constructor(private usersService: UsersService) {}
 
   async signUp(signUpDto: SignUpDto) {
-    const { email, password } = signUpDto;
-
-    // TODO: Need to throw an error if found a existing one
+    const { password } = signUpDto;
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
     signUpDto.password = hashedPassword;
 
-    const user = this.usersService.create(signUpDto);
-    return signUpDto;
+    const user = await this.usersService.create(signUpDto);
+    return user;
   }
 
   findAll() {
