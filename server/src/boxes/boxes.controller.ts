@@ -10,7 +10,7 @@ import {
   Request,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import ParamsWithId from 'src/utils/paramsWithId';
 import { BoxesService } from './boxes.service';
 import { CreateBoxDto } from './dto/create-box.dto';
 import { UpdateBoxDto } from './dto/update-box.dto';
@@ -20,7 +20,6 @@ import { UpdateBoxDto } from './dto/update-box.dto';
 export class BoxesController {
   constructor(private readonly boxesService: BoxesService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createBoxDto: CreateBoxDto, @Request() req) {
     return this.boxesService.create(createBoxDto, req.user);
@@ -37,8 +36,12 @@ export class BoxesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBoxDto: UpdateBoxDto) {
-    return this.boxesService.update(+id, updateBoxDto);
+  update(
+    @Param() { id }: ParamsWithId,
+    @Body() updateBoxDto: UpdateBoxDto,
+    @Request() req,
+  ) {
+    return this.boxesService.update(id, updateBoxDto, req.user);
   }
 
   @Delete(':id')
