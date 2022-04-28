@@ -13,6 +13,8 @@ import { MongooseModule } from '@nestjs/mongoose';
       validationSchema: Joi.object({
         PORT: Joi.number().default(4000),
         MONGODB_URI: Joi.string().required(),
+        AUTH_JWT_SECRET: Joi.string().required(),
+        AUTH_JWT_EXPIRATION: Joi.string().required(),
       }),
     }),
     MongooseModule.forRootAsync({

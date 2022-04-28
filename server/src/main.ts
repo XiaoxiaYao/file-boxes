@@ -6,6 +6,7 @@ import {
   SwaggerCustomOptions,
   SwaggerModule,
 } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -33,6 +34,9 @@ async function bootstrap() {
   };
   SwaggerModule.setup('docs', app, document, customOptions);
 
+  app.use(cookieParser());
+
+  // Config PORT
   const configService = app.get(ConfigService);
   const port = configService.get('PORT');
   await app.listen(port);

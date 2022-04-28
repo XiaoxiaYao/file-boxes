@@ -21,6 +21,11 @@ export class UsersService {
     return createdUser;
   }
 
+  async findOneByEmail(email: string) {
+    const user = await this.userModel.findOne({ email });
+    return user;
+  }
+
   findAll() {
     return `This action returns all users`;
   }
