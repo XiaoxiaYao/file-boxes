@@ -6,6 +6,7 @@ import * as Joi from 'joi';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BoxesModule } from './boxes/boxes.module';
 import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
     AuthModule,
     BoxesModule,
     CloudStorageModule,
+    FileModule,
   ],
 })
 export class AppModule {}

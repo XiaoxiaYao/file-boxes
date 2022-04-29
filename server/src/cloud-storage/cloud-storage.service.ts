@@ -31,9 +31,9 @@ export class CloudStorageService {
     });
   }
 
-  async deleteFile(file_id: string): Promise<any> {
+  async deleteFile(cloudStorageId: string): Promise<any> {
     try {
-      const response = await v2.uploader.destroy(file_id);
+      const response = await v2.uploader.destroy(cloudStorageId);
       return response;
     } catch (error) {
       throw new BadRequestException('Fail to delete the file.');
