@@ -10,6 +10,9 @@ export class File {
   _id: ObjectId;
 
   @Prop()
+  name: string;
+
+  @Prop()
   url: string;
 
   @Prop()

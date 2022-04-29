@@ -20,6 +20,7 @@ export class CloudStorageService {
             'CLOUD_STORAGE_FOLDER',
           )}/${folder}/`,
           public_id: fileName,
+          resource_type: RAW,
         },
         (error, result) => {
           if (error) return reject(error);
@@ -33,10 +34,18 @@ export class CloudStorageService {
 
   async deleteFile(cloudStorageId: string): Promise<any> {
     try {
-      const response = await v2.uploader.destroy(cloudStorageId);
+      const response = await v2.uploader.destroy(cloudStorageId, {
+        resource_type: RAW,
+      });
+      if (response.result != OK) {
+        throw new BadRequestException(response.result);
+      }
       return response;
     } catch (error) {
       throw new BadRequestException('Fail to delete the file.');
     }
   }
 }
+
+const RAW = 'raw';
+const OK = 'ok';

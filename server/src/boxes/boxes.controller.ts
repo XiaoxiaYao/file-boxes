@@ -8,8 +8,12 @@ import {
   Delete,
   UseGuards,
   Request,
+  UseInterceptors,
+  Req,
+  UploadedFile,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { OptionalJwtAuthGuard } from 'src/auth/guards/optional-jwt-auth.guard';
 import ParamsWithId from 'src/utils/paramsWithId';
 import { BoxesService } from './boxes.service';
@@ -30,6 +34,29 @@ export class BoxesController {
   @Get()
   findAll() {
     return this.boxesService.findAll();
+  }
+
+  @Post(':id/upload-file')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'A file',
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const savedBox = await this.boxesService.uploadFile(id, file);
+    return savedBox;
   }
 
   @Get(':id')
