@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import * as Joi from 'joi';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BoxesModule } from './boxes/boxes.module';
+import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
 
 @Module({
   imports: [
@@ -16,6 +17,10 @@ import { BoxesModule } from './boxes/boxes.module';
         MONGODB_URI: Joi.string().required(),
         AUTH_JWT_SECRET: Joi.string().required(),
         AUTH_JWT_EXPIRATION: Joi.string().required(),
+        CLOUD_STORAGE_NAME: Joi.string().required(),
+        CLOUD_STORAGE_API_KEY: Joi.string().required(),
+        CLOUD_STORAGE_API_SECRET: Joi.string().required(),
+        CLOUD_STORAGE_FOLDER: Joi.string().required(),
       }),
     }),
     MongooseModule.forRootAsync({
@@ -28,6 +33,7 @@ import { BoxesModule } from './boxes/boxes.module';
     UsersModule,
     AuthModule,
     BoxesModule,
+    CloudStorageModule,
   ],
 })
 export class AppModule {}
