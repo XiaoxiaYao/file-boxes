@@ -18,6 +18,9 @@ export class Box {
   @Prop()
   description: string;
 
+  @Prop()
+  private: boolean;
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
   @Type(() => User)
   owner: User;

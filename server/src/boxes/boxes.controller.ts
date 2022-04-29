@@ -13,12 +13,14 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiParam, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from 'src/auth/guards/optional-jwt-auth.guard';
 import ParamsWithId from 'src/utils/paramsWithId';
 import { BoxesService } from './boxes.service';
 import { CreateBoxDto } from './dto/create-box.dto';
 import { UpdateBoxDto } from './dto/update-box.dto';
+import { OwnerGuard } from './guards/owner.guard';
 
 @ApiTags('Boxes')
 @Controller('boxes')
@@ -50,9 +52,14 @@ export class BoxesController {
       },
     },
   })
+  @ApiParam({
+    required: true,
+    name: 'id',
+    type: 'string',
+  })
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
-    @Param('id') id: string,
+    @Param() { id }: ParamsWithId,
     @UploadedFile() file: Express.Multer.File,
   ) {
     const savedBox = await this.boxesService.uploadFile(id, file);
@@ -60,11 +67,22 @@ export class BoxesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  @ApiParam({
+    required: true,
+    name: 'id',
+    type: 'string',
+  })
+  findOne(@Param() { id }: ParamsWithId) {
     return this.boxesService.findOne(+id);
   }
 
+  @UseGuards(OptionalJwtAuthGuard)
   @Patch(':id')
+  @ApiParam({
+    required: true,
+    name: 'id',
+    type: 'string',
+  })
   update(
     @Param() { id }: ParamsWithId,
     @Body() updateBoxDto: UpdateBoxDto,
@@ -73,8 +91,25 @@ export class BoxesController {
     return this.boxesService.update(id, updateBoxDto, req.user);
   }
 
+  @Patch(':id/set-to-public')
+  @ApiParam({
+    required: true,
+    name: 'id',
+    type: 'string',
+  })
+  @UseGuards(OwnerGuard)
+  @UseGuards(JwtAuthGuard)
+  setToPublic(@Param() { id }: ParamsWithId) {
+    return this.boxesService.setToPublic(id);
+  }
+
+  @ApiParam({
+    required: true,
+    name: 'id',
+    type: 'string',
+  })
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param() { id }: ParamsWithId) {
     return this.boxesService.remove(+id);
   }
 }

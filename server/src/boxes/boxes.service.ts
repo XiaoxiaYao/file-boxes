@@ -24,12 +24,15 @@ export class BoxesService {
     const createdBox = new this.boxModel({
       ...createBoxDto,
       owner,
+      private: owner === undefined ? false : true,
     });
     return createdBox.save();
   }
 
   async findAll() {
-    return this.boxModel.find().populate('owner', '-password');
+    return this.boxModel
+      .find({ private: false })
+      .populate('owner', '-password');
   }
 
   async uploadFile(boxId: string, file: Express.Multer.File) {
@@ -82,13 +85,33 @@ export class BoxesService {
   }
 
   async update(id: string, updateBoxDto: UpdateBoxDto, owner: User) {
-    const box = await this.boxModel
-      .findByIdAndUpdate(id, updateBoxDto)
-      .setOptions({ overwrite: true, new: true });
-    if (!box) {
-      throw new NotFoundException('Box not found.');
+    try {
+      const box = await this.boxModel
+        .findByIdAndUpdate(id, updateBoxDto)
+        .setOptions({ new: true });
+      if (!box) {
+        throw new NotFoundException('Box not found.');
+      }
+      return box;
+    } catch (error) {
+      throw error;
     }
-    return box;
+  }
+
+  async setToPublic(id: string) {
+    try {
+      const box = await this.boxModel
+        .findByIdAndUpdate(id, {
+          private: false,
+        })
+        .setOptions({ new: true });
+      if (!box) {
+        throw new NotFoundException('Box not found.');
+      }
+      return box;
+    } catch (error) {
+      throw error;
+    }
   }
 
   remove(id: number) {
