@@ -6,8 +6,9 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Observable } from 'rxjs';
-import { Box, BoxDocument } from '../boxes/schemas/box.schema';
+import { Box, BoxDocument } from '../schemas/box.schema';
 import { Model } from 'mongoose';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class OwnerGuard implements CanActivate {
@@ -24,11 +25,14 @@ export class OwnerGuard implements CanActivate {
     const { user } = request;
     const { id } = request.params;
 
-    let box = await this.boxModel.findById(id);
+    if (!mongoose.isValidObjectId(id)) {
+      throw new NotFoundException('id must be a mongodb id');
+    }
+
+    let box = await this.boxModel.findOne({ _id: id });
     if (!box) {
       throw new NotFoundException('Box not found.');
     }
-
     if (!box.owner) {
       return true;
     }

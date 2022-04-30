@@ -19,8 +19,10 @@ import ParamsWithId from 'src/utils/paramsWithId';
 import { BoxesService } from './boxes.service';
 import { CreateBoxDto } from './dto/create-box.dto';
 import { UpdateBoxDto } from './dto/update-box.dto';
-import { OwnerGuard } from '../guards/owner.guard';
+import { OwnerGuard } from './guards/owner.guard';
 import { OptionalJwtAuthGuard } from 'src/guards/optional-jwt-auth.guard';
+import { SuperUserGuard } from 'src/boxes/guards/super-user.guard';
+import { OrGuard } from '@nest-lab/or-guard';
 
 @ApiTags('Boxes')
 @Controller('boxes')
@@ -34,8 +36,9 @@ export class BoxesController {
   }
 
   @Get()
-  findAll() {
-    return this.boxesService.findAll();
+  @UseGuards(OptionalJwtAuthGuard)
+  findAll(@Request() req) {
+    return this.boxesService.findAll(req.user);
   }
 
   @Post(':id/upload-file')
@@ -76,27 +79,23 @@ export class BoxesController {
     return this.boxesService.findOne(+id);
   }
 
-  @UseGuards(OptionalJwtAuthGuard)
-  @Patch(':id')
   @ApiParam({
     required: true,
     name: 'id',
     type: 'string',
   })
-  update(
-    @Param() { id }: ParamsWithId,
-    @Body() updateBoxDto: UpdateBoxDto,
-    @Request() req,
-  ) {
-    return this.boxesService.update(id, updateBoxDto, req.user);
+  @Patch(':id')
+  @UseGuards(OptionalJwtAuthGuard)
+  update(@Param() { id }: ParamsWithId, @Body() updateBoxDto: UpdateBoxDto) {
+    return this.boxesService.update(id, updateBoxDto);
   }
 
-  @Patch(':id/set-to-public')
   @ApiParam({
     required: true,
     name: 'id',
     type: 'string',
   })
+  @Patch(':id/set-to-public')
   @UseGuards(OwnerGuard)
   @UseGuards(JwtAuthGuard)
   setToPublic(@Param() { id }: ParamsWithId) {
@@ -109,7 +108,9 @@ export class BoxesController {
     type: 'string',
   })
   @Delete(':id')
+  @UseGuards(OrGuard([SuperUserGuard, OwnerGuard]))
+  @UseGuards(JwtAuthGuard)
   remove(@Param() { id }: ParamsWithId) {
-    return this.boxesService.remove(+id);
+    return this.boxesService.remove(id);
   }
 }
