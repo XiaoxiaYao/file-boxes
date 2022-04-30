@@ -28,13 +28,14 @@ export class AuthService {
   }
 
   async validateUser(signUpUserDto: SignUpDto): Promise<any> {
-    const { email, password } = signUpUserDto;
-    const user = await this.usersService.findOneByEmail(email);
+    const user = await this.usersService.findOneWithPasswordByEmail(
+      signUpUserDto.email,
+    );
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(signUpUserDto.password, user.password);
     if (!isMatch) {
       throw new BadRequestException('Wrong password. Please try again.');
     }

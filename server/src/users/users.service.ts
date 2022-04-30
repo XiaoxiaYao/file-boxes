@@ -34,6 +34,11 @@ export class UsersService {
     return user;
   }
 
+  async findOneWithPasswordByEmail(email: string) {
+    const user = await this.userModel.findOne({ email }).select('+password');
+    return user;
+  }
+
   findAll() {
     return `This action returns all users`;
   }

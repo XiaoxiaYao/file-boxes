@@ -1,21 +1,24 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
-import { User } from 'src/users/schemas/user.schema';
+import { User, UserDocument } from 'src/users/schemas/user.schema';
 import { CreateBoxDto } from './dto/create-box.dto';
 import { UpdateBoxDto } from './dto/update-box.dto';
 import { Box, BoxDocument } from './schemas/box.schema';
 import { Model } from 'mongoose';
 import mongoose from 'mongoose';
 import { FileService } from 'src/file/file.service';
+import { ShareBoxDto } from './dto/share-box.dto';
 
 @Injectable()
 export class BoxesService {
   constructor(
     @InjectModel(Box.name) private boxModel: Model<BoxDocument>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectConnection() private readonly connection: mongoose.Connection,
     private readonly fileService: FileService,
   ) {}
@@ -130,6 +133,37 @@ export class BoxesService {
         throw error;
       }
       return 'Box deleted!';
+    }
+  }
+
+  async share(boxId: string, shareBoxDto: ShareBoxDto) {
+    try {
+      const { email } = shareBoxDto;
+      const user = (await this.userModel.findOne({ email })) as User;
+      if (!user) {
+        throw new NotFoundException('User not found.');
+      }
+
+      const box = await this.boxModel.findById(boxId);
+      if (!box) {
+        throw new NotFoundException('Box not found.');
+      }
+
+      box.accessAllowedUser.map((allowedUser) => {
+        if (allowedUser._id.toString() === user._id.toString()) {
+          throw new ConflictException(
+            'You have shared the box to this user. No need to do it again!',
+          );
+        }
+      });
+      await box.updateOne({
+        $push: {
+          accessAllowedUser: user,
+        },
+      });
+      return 'Shared!';
+    } catch (error) {
+      throw error;
     }
   }
 

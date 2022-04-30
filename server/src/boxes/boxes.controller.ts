@@ -23,6 +23,7 @@ import { OwnerGuard } from './guards/owner.guard';
 import { OptionalJwtAuthGuard } from 'src/guards/optional-jwt-auth.guard';
 import { SuperUserGuard } from 'src/boxes/guards/super-user.guard';
 import { OrGuard } from '@nest-lab/or-guard';
+import { ShareBoxDto } from './dto/share-box.dto';
 
 @ApiTags('Boxes')
 @Controller('boxes')
@@ -112,5 +113,17 @@ export class BoxesController {
   @UseGuards(JwtAuthGuard)
   remove(@Param() { id }: ParamsWithId) {
     return this.boxesService.remove(id);
+  }
+
+  @ApiParam({
+    required: true,
+    name: 'id',
+    type: 'string',
+  })
+  @Patch(':id/share')
+  @UseGuards(OwnerGuard)
+  @UseGuards(JwtAuthGuard)
+  share(@Param() { id }: ParamsWithId, @Body() shareBoxDto: ShareBoxDto) {
+    return this.boxesService.share(id, shareBoxDto);
   }
 }

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, ObjectId } from 'mongoose';
-import { Exclude, Transform } from 'class-transformer';
+import { Transform } from 'class-transformer';
 
 export type UserDocument = User & Document;
 
@@ -12,12 +12,18 @@ export class User {
   @Prop()
   email: string;
 
-  @Prop()
-  @Exclude()
+  @Prop({ select: false })
   password: string;
 
   @Prop({ default: false })
   isSuperUser: boolean;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+let TempUserSchema = SchemaFactory.createForClass(User);
+TempUserSchema.methods.toJSON = function () {
+  var obj = this.toObject();
+  delete obj.password;
+  return obj;
+};
+
+export const UserSchema = TempUserSchema;
