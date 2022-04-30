@@ -43,7 +43,7 @@ export class BoxesService {
     }
 
     // Non super user can read its own or allowed access
-    return this.boxModel.find({ $or: [{ private: true, owner: user._id }] });
+    return this.boxModel.find({ owner: user._id });
   }
 
   async uploadFile(boxId: string, file: Express.Multer.File) {

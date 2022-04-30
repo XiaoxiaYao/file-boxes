@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { BoxesService } from './boxes.service';
 import { BoxesController } from './boxes.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -12,9 +12,10 @@ import { SuperUserGuard } from './guards/super-user.guard';
   imports: [
     MongooseModule.forFeature([{ name: Box.name, schema: BoxSchema }]),
     FileModule,
-    UsersModule,
+    forwardRef(() => UsersModule),
   ],
   controllers: [BoxesController],
   providers: [BoxesService, OwnerGuard, SuperUserGuard],
+  exports: [BoxesService],
 })
 export class BoxesModule {}
