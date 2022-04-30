@@ -46,6 +46,7 @@ export class AuthService {
     const payload = {
       email: user.email,
       sub: user.id,
+      isSuperUser: user.isSuperUser,
     };
     const token = this.jwtService.sign(payload);
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get<string>(

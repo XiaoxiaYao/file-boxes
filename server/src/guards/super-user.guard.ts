@@ -17,15 +17,6 @@ export class SuperUserGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
-    return this.validateRequest(request);
-  }
-
-  async validateRequest(request): Promise<boolean> {
-    let user = await this.userModel.findById(request.user._id);
-    if (!user) {
-      throw new NotFoundException('User not found.');
-    }
-
-    return user.isSuperUser;
+    return request.user.isSuperUser;
   }
 }
