@@ -76,8 +76,9 @@ export class BoxesController {
     name: 'id',
     type: 'string',
   })
-  findOne(@Param() { id }: ParamsWithId) {
-    return this.boxesService.findOne(+id);
+  @UseGuards(OptionalJwtAuthGuard)
+  findOne(@Param() { id }: ParamsWithId, @Request() req) {
+    return this.boxesService.findOne(id, req.user);
   }
 
   @ApiParam({

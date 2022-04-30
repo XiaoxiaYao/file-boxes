@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -82,8 +83,31 @@ export class BoxesService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} box`;
+  async findOne(id: string, user: User) {
+    const box = await this.boxModel.findById(id);
+    if (!box.private) {
+      return box;
+    }
+
+    if (user) {
+      if (user.isSuperUser) {
+        return box;
+      }
+
+      if (user._id.toString() === box.owner._id.toString()) {
+        return box;
+      }
+
+      for (const allowedUser of box.accessAllowedUser) {
+        if (allowedUser._id.toString() === user._id.toString()) {
+          return box;
+        }
+      }
+    }
+
+    throw new ForbiddenException(
+      'This is a private box and its not shared to you.',
+    );
   }
 
   async update(id: string, updateBoxDto: UpdateBoxDto) {
@@ -149,13 +173,14 @@ export class BoxesService {
         throw new NotFoundException('Box not found.');
       }
 
-      box.accessAllowedUser.map((allowedUser) => {
+      for (const allowedUser of box.accessAllowedUser) {
         if (allowedUser._id.toString() === user._id.toString()) {
           throw new ConflictException(
             'You have shared the box to this user. No need to do it again!',
           );
         }
-      });
+      }
+
       await box.updateOne({
         $push: {
           accessAllowedUser: user,
