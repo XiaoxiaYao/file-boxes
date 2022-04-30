@@ -14,13 +14,13 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiParam, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { OptionalJwtAuthGuard } from 'src/auth/guards/optional-jwt-auth.guard';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import ParamsWithId from 'src/utils/paramsWithId';
 import { BoxesService } from './boxes.service';
 import { CreateBoxDto } from './dto/create-box.dto';
 import { UpdateBoxDto } from './dto/update-box.dto';
-import { OwnerGuard } from './guards/owner.guard';
+import { OwnerGuard } from '../guards/owner.guard';
+import { OptionalJwtAuthGuard } from 'src/guards/optional-jwt-auth.guard';
 
 @ApiTags('Boxes')
 @Controller('boxes')

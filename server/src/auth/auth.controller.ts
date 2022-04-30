@@ -8,12 +8,12 @@ import {
   Get,
 } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { LocalAuthGuard } from 'src/guards/local-auth.guard';
 import MongooseClassSerializerInterceptor from 'src/interceptors/mongooseClassSerializer.interceptor';
 import { User } from 'src/users/schemas/user.schema';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @ApiTags('Authentication')
 @Controller('auth')

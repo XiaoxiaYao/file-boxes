@@ -15,6 +15,9 @@ export class User {
   @Prop()
   @Exclude()
   password: string;
+
+  @Prop({ default: false })
+  isSuperUser: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

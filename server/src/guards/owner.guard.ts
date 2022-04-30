@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Observable } from 'rxjs';
-import { Box, BoxDocument } from '../schemas/box.schema';
+import { Box, BoxDocument } from '../boxes/schemas/box.schema';
 import { Model } from 'mongoose';
 
 @Injectable()
@@ -32,8 +32,6 @@ export class OwnerGuard implements CanActivate {
     if (!box.owner) {
       return true;
     }
-    return new Promise<boolean>((resolve, reject) => {
-      resolve(user._id === box.owner._id.toString());
-    });
+    return user._id === box.owner._id.toString();
   }
 }
