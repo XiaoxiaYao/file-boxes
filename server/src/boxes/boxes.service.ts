@@ -39,18 +39,22 @@ export class BoxesService {
   async findAll(user: User) {
     // Unauthenticated users can read public boxes.
     if (!user) {
-      return this.boxModel
-        .find({ private: false })
-        .populate('owner', '-password');
+      return this.boxModel.find({ private: false }).populate('owner');
     }
 
     // Superuser can read boxes.
     if (user.isSuperUser) {
-      return this.boxModel.find().populate('owner', '-password');
+      return this.boxModel.find().populate('owner');
     }
 
     // Non super user can read its own or allowed access
-    return this.boxModel.find({ owner: user._id });
+    return this.boxModel.find({
+      $or: [
+        { owner: user._id },
+        { private: false },
+        { $and: [{ private: true }, { accessAllowedUser: user }] },
+      ],
+    });
   }
 
   async uploadFile(boxId: string, file: Express.Multer.File) {
@@ -117,18 +121,28 @@ export class BoxesService {
     return await this.boxModel.find({ owner: ownerId });
   }
 
-  async update(id: string, updateBoxDto: UpdateBoxDto) {
-    try {
-      const box = await this.boxModel
-        .findByIdAndUpdate(id, updateBoxDto)
-        .setOptions({ new: true });
-      if (!box) {
-        throw new NotFoundException('Box not found.');
-      }
-      return box;
-    } catch (error) {
-      throw error;
+  async update(id: string, updateBoxDto: UpdateBoxDto, user: User) {
+    const box = await this.boxModel.findById(id);
+    if (!box) {
+      throw new NotFoundException('Box not found.');
     }
+    if (box.private) {
+      if (!user) {
+        throw new ForbiddenException(
+          'You can not update private box as a guest.',
+        );
+      } else {
+        if (user._id.toString() != box.owner._id.toString()) {
+          throw new ForbiddenException(
+            'You are not the owner. Not allowed to update the box.',
+          );
+        }
+      }
+    }
+
+    return await this.boxModel
+      .findByIdAndUpdate(id, updateBoxDto)
+      .setOptions({ new: true });
   }
 
   async setToPublic(id: string) {

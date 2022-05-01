@@ -88,8 +88,12 @@ export class BoxesController {
   })
   @Patch(':id')
   @UseGuards(OptionalJwtAuthGuard)
-  update(@Param() { id }: ParamsWithId, @Body() updateBoxDto: UpdateBoxDto) {
-    return this.boxesService.update(id, updateBoxDto);
+  update(
+    @Param() { id }: ParamsWithId,
+    @Body() updateBoxDto: UpdateBoxDto,
+    @Request() req,
+  ) {
+    return this.boxesService.update(id, updateBoxDto, req.user);
   }
 
   @ApiParam({
