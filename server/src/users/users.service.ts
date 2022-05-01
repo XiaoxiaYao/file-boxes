@@ -1,18 +1,22 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { SignUpDto } from 'src/auth/dto/sign-up.dto';
 import { User, UserDocument } from './schemas/user.schema';
 import { Model } from 'mongoose';
 import mongoose from 'mongoose';
 import { BoxesService } from 'src/boxes/boxes.service';
-import { Box, BoxDocument } from 'src/boxes/schemas/box.schema';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectConnection() private readonly connection: mongoose.Connection,
-    @InjectModel(Box.name) private boxModel: Model<BoxDocument>,
+    @Inject(forwardRef(() => BoxesService))
     private readonly boxesService: BoxesService,
   ) {}
 
@@ -39,20 +43,12 @@ export class UsersService {
     return user;
   }
 
-  findAll() {
-    return `This action returns all users`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
   async remove(userId: string) {
     const session = await this.connection.startSession();
     session.startTransaction();
     let error;
     try {
-      let ownedBoxes = await this.boxModel.find({ owner: userId });
+      let ownedBoxes = await this.boxesService.findAllOwned(userId);
       await Promise.all(
         ownedBoxes.map(async (box) => {
           await this.boxesService.remove(box._id);

@@ -1,12 +1,13 @@
 import {
-  BadRequestException,
   ConflictException,
   ForbiddenException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from 'src/users/schemas/user.schema';
+import { User } from 'src/users/schemas/user.schema';
 import { CreateBoxDto } from './dto/create-box.dto';
 import { UpdateBoxDto } from './dto/update-box.dto';
 import { Box, BoxDocument } from './schemas/box.schema';
@@ -14,14 +15,16 @@ import { Model } from 'mongoose';
 import mongoose from 'mongoose';
 import { FileService } from 'src/file/file.service';
 import { ShareBoxDto } from './dto/share-box.dto';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class BoxesService {
   constructor(
     @InjectModel(Box.name) private boxModel: Model<BoxDocument>,
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectConnection() private readonly connection: mongoose.Connection,
     private readonly fileService: FileService,
+    @Inject(forwardRef(() => UsersService))
+    private readonly usersService: UsersService,
   ) {}
 
   create(createBoxDto: CreateBoxDto, owner: User) {
@@ -110,6 +113,10 @@ export class BoxesService {
     );
   }
 
+  async findAllOwned(ownerId: string) {
+    return await this.boxModel.find({ owner: ownerId });
+  }
+
   async update(id: string, updateBoxDto: UpdateBoxDto) {
     try {
       const box = await this.boxModel
@@ -163,7 +170,7 @@ export class BoxesService {
   async share(boxId: string, shareBoxDto: ShareBoxDto) {
     try {
       const { email } = shareBoxDto;
-      const user = (await this.userModel.findOne({ email })) as User;
+      const user = (await this.usersService.findOneByEmail(email)) as User;
       if (!user) {
         throw new NotFoundException('User not found.');
       }
