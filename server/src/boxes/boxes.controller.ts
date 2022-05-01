@@ -9,13 +9,11 @@ import {
   UseGuards,
   Request,
   UseInterceptors,
-  Req,
   UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiParam, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import ParamsWithId from 'src/utils/paramsWithId';
 import { BoxesService } from './boxes.service';
 import { CreateBoxDto } from './dto/create-box.dto';
 import { UpdateBoxDto } from './dto/update-box.dto';
@@ -24,6 +22,8 @@ import { OptionalJwtAuthGuard } from 'src/guards/optional-jwt-auth.guard';
 import { SuperUserGuard } from 'src/boxes/guards/super-user.guard';
 import { OrGuard } from '@nest-lab/or-guard';
 import { ShareBoxDto } from './dto/share-box.dto';
+import { PublicAccessibleGuard } from './guards/public-accessible.guard';
+import { AllowedUserGuard } from './guards/allowed-user.guard';
 
 @ApiTags('Boxes')
 @Controller('boxes')
@@ -62,8 +62,14 @@ export class BoxesController {
     type: 'string',
   })
   @UseInterceptors(FileInterceptor('file'))
+  @UseGuards(
+    OrGuard([PublicAccessibleGuard, OwnerGuard], {
+      throwOnFirstError: true,
+    }),
+  )
+  @UseGuards(OptionalJwtAuthGuard)
   async uploadFile(
-    @Param() { id }: ParamsWithId,
+    @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
     const savedBox = await this.boxesService.uploadFile(id, file);
@@ -76,9 +82,17 @@ export class BoxesController {
     name: 'id',
     type: 'string',
   })
+  @UseGuards(
+    OrGuard(
+      [PublicAccessibleGuard, OwnerGuard, AllowedUserGuard, SuperUserGuard],
+      {
+        throwOnFirstError: true,
+      },
+    ),
+  )
   @UseGuards(OptionalJwtAuthGuard)
-  findOne(@Param() { id }: ParamsWithId, @Request() req) {
-    return this.boxesService.findOne(id, req.user);
+  findOne(@Param('id') id: string) {
+    return this.boxesService.findOne(id);
   }
 
   @ApiParam({
@@ -87,13 +101,14 @@ export class BoxesController {
     type: 'string',
   })
   @Patch(':id')
+  @UseGuards(
+    OrGuard([PublicAccessibleGuard, OwnerGuard], {
+      throwOnFirstError: true,
+    }),
+  )
   @UseGuards(OptionalJwtAuthGuard)
-  update(
-    @Param() { id }: ParamsWithId,
-    @Body() updateBoxDto: UpdateBoxDto,
-    @Request() req,
-  ) {
-    return this.boxesService.update(id, updateBoxDto, req.user);
+  update(@Param('id') id: string, @Body() updateBoxDto: UpdateBoxDto) {
+    return this.boxesService.update(id, updateBoxDto);
   }
 
   @ApiParam({
@@ -104,7 +119,7 @@ export class BoxesController {
   @Patch(':id/set-to-public')
   @UseGuards(OwnerGuard)
   @UseGuards(JwtAuthGuard)
-  setToPublic(@Param() { id }: ParamsWithId) {
+  setToPublic(@Param('id') id: string) {
     return this.boxesService.setToPublic(id);
   }
 
@@ -114,9 +129,13 @@ export class BoxesController {
     type: 'string',
   })
   @Delete(':id')
-  @UseGuards(OrGuard([SuperUserGuard, OwnerGuard]))
+  @UseGuards(
+    OrGuard([SuperUserGuard, OwnerGuard], {
+      throwOnFirstError: true,
+    }),
+  )
   @UseGuards(JwtAuthGuard)
-  remove(@Param() { id }: ParamsWithId) {
+  remove(@Param('id') id: string) {
     return this.boxesService.remove(id);
   }
 
@@ -128,7 +147,7 @@ export class BoxesController {
   @Patch(':id/share')
   @UseGuards(OwnerGuard)
   @UseGuards(JwtAuthGuard)
-  share(@Param() { id }: ParamsWithId, @Body() shareBoxDto: ShareBoxDto) {
+  share(@Param('id') id: string, @Body() shareBoxDto: ShareBoxDto) {
     return this.boxesService.share(id, shareBoxDto);
   }
 }

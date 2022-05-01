@@ -1,6 +1,6 @@
 import {
+  BadRequestException,
   ConflictException,
-  ForbiddenException,
   forwardRef,
   Inject,
   Injectable,
@@ -47,7 +47,7 @@ export class BoxesService {
       return this.boxModel.find().populate('owner');
     }
 
-    // Non super user can read its own or allowed access
+    // Non super user can read its own or allowed access and public boxes.
     return this.boxModel.find({
       $or: [
         { owner: user._id },
@@ -58,6 +58,9 @@ export class BoxesService {
   }
 
   async uploadFile(boxId: string, file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('You must select a file.');
+    }
     const session = await this.connection.startSession();
     session.startTransaction();
     let newBox: Box &
@@ -90,75 +93,26 @@ export class BoxesService {
     }
   }
 
-  async findOne(id: string, user: User) {
-    const box = await this.boxModel.findById(id);
-    if (!box.private) {
-      return box;
-    }
-
-    if (user) {
-      if (user.isSuperUser) {
-        return box;
-      }
-
-      if (user._id.toString() === box.owner._id.toString()) {
-        return box;
-      }
-
-      for (const allowedUser of box.accessAllowedUser) {
-        if (allowedUser._id.toString() === user._id.toString()) {
-          return box;
-        }
-      }
-    }
-
-    throw new ForbiddenException(
-      'This is a private box and its not shared to you.',
-    );
+  async findOne(id: string) {
+    return await this.boxModel.findById(id);
   }
 
   async findAllOwned(ownerId: string) {
     return await this.boxModel.find({ owner: ownerId });
   }
 
-  async update(id: string, updateBoxDto: UpdateBoxDto, user: User) {
-    const box = await this.boxModel.findById(id);
-    if (!box) {
-      throw new NotFoundException('Box not found.');
-    }
-    if (box.private) {
-      if (!user) {
-        throw new ForbiddenException(
-          'You can not update private box as a guest.',
-        );
-      } else {
-        if (user._id.toString() != box.owner._id.toString()) {
-          throw new ForbiddenException(
-            'You are not the owner. Not allowed to update the box.',
-          );
-        }
-      }
-    }
-
+  async update(id: string, updateBoxDto: UpdateBoxDto) {
     return await this.boxModel
       .findByIdAndUpdate(id, updateBoxDto)
       .setOptions({ new: true });
   }
 
   async setToPublic(id: string) {
-    try {
-      const box = await this.boxModel
-        .findByIdAndUpdate(id, {
-          private: false,
-        })
-        .setOptions({ new: true });
-      if (!box) {
-        throw new NotFoundException('Box not found.');
-      }
-      return box;
-    } catch (error) {
-      throw error;
-    }
+    return await this.boxModel
+      .findByIdAndUpdate(id, {
+        private: false,
+      })
+      .setOptions({ new: true });
   }
 
   async remove(boxId: string) {
@@ -186,13 +140,12 @@ export class BoxesService {
       const { email } = shareBoxDto;
       const user = (await this.usersService.findOneByEmail(email)) as User;
       if (!user) {
-        throw new NotFoundException('User not found.');
+        throw new NotFoundException(
+          `This user doesn't exist. Can not share to ghost user.`,
+        );
       }
 
       const box = await this.boxModel.findById(boxId);
-      if (!box) {
-        throw new NotFoundException('Box not found.');
-      }
 
       for (const allowedUser of box.accessAllowedUser) {
         if (allowedUser._id.toString() === user._id.toString()) {
@@ -215,9 +168,6 @@ export class BoxesService {
 
   async emptyBox(boxId: string, session: mongoose.ClientSession) {
     let box = await this.boxModel.findById(boxId);
-    if (!box) {
-      throw new NotFoundException('Box not found.');
-    }
     if (box.file) {
       const result = await this.fileService.deleteFile(
         box.file._id.toString(),

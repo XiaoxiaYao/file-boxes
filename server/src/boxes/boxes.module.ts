@@ -7,6 +7,8 @@ import { FileModule } from 'src/file/file.module';
 import { UsersModule } from 'src/users/users.module';
 import { OwnerGuard } from './guards/owner.guard';
 import { SuperUserGuard } from './guards/super-user.guard';
+import { PublicAccessibleGuard } from './guards/public-accessible.guard';
+import { AllowedUserGuard } from './guards/allowed-user.guard';
 
 @Module({
   imports: [
@@ -15,7 +17,13 @@ import { SuperUserGuard } from './guards/super-user.guard';
     forwardRef(() => UsersModule),
   ],
   controllers: [BoxesController],
-  providers: [BoxesService, OwnerGuard, SuperUserGuard],
+  providers: [
+    BoxesService,
+    OwnerGuard,
+    SuperUserGuard,
+    PublicAccessibleGuard,
+    AllowedUserGuard,
+  ],
   exports: [BoxesService],
 })
 export class BoxesModule {}

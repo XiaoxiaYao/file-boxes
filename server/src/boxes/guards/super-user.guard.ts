@@ -7,6 +7,14 @@ export class SuperUserGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
-    return request.user.isSuperUser;
+    return this.validateRequest(request);
+  }
+
+  async validateRequest(request): Promise<boolean> {
+    const { user } = request;
+    if (user && user.isSuperUser) {
+      return true;
+    }
+    return false;
   }
 }

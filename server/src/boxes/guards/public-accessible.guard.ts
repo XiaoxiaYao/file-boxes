@@ -11,7 +11,7 @@ import { Model } from 'mongoose';
 import mongoose from 'mongoose';
 
 @Injectable()
-export class OwnerGuard implements CanActivate {
+export class PublicAccessibleGuard implements CanActivate {
   constructor(@InjectModel(Box.name) private boxModel: Model<BoxDocument>) {}
 
   canActivate(
@@ -22,10 +22,6 @@ export class OwnerGuard implements CanActivate {
   }
 
   async validateRequest(request): Promise<boolean> {
-    const { user } = request;
-    if (!user) {
-      return false;
-    }
     const { id } = request.params;
 
     if (!mongoose.isValidObjectId(id)) {
@@ -36,9 +32,6 @@ export class OwnerGuard implements CanActivate {
     if (!box) {
       throw new NotFoundException('Box not found.');
     }
-    if (!box.owner) {
-      return false;
-    }
-    return user._id === box.owner._id.toString();
+    return !box.private;
   }
 }

@@ -11,7 +11,7 @@ import { Model } from 'mongoose';
 import mongoose from 'mongoose';
 
 @Injectable()
-export class OwnerGuard implements CanActivate {
+export class AllowedUserGuard implements CanActivate {
   constructor(@InjectModel(Box.name) private boxModel: Model<BoxDocument>) {}
 
   canActivate(
@@ -36,9 +36,12 @@ export class OwnerGuard implements CanActivate {
     if (!box) {
       throw new NotFoundException('Box not found.');
     }
-    if (!box.owner) {
-      return false;
+
+    for (const allowedUser of box.accessAllowedUser) {
+      if (allowedUser._id.toString() === user._id.toString()) {
+        return true;
+      }
     }
-    return user._id === box.owner._id.toString();
+    return false;
   }
 }
