@@ -20,3 +20,5 @@ export const signout = () => axios.post('/auth/sign-out/');
 export const currentUser = () => axios.get('/auth/current-user/');
 
 export const listBoxes = () => axios.get('/boxes/');
+
+export const retrieveBox = (boxId) => axios.get(`/boxes/${boxId}`);
