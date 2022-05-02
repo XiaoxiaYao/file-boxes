@@ -16,6 +16,7 @@ import mongoose from 'mongoose';
 import { FileService } from 'src/file/file.service';
 import { ShareBoxDto } from './dto/share-box.dto';
 import { UsersService } from 'src/users/users.service';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class BoxesService {
@@ -72,7 +73,7 @@ export class BoxesService {
       let box = await this.emptyBox(boxId, session);
 
       const uploadedFile = await this.fileService.uploadFile(
-        file.originalname,
+        `${uuid()}_${file.originalname}`,
         SUB_FOLDERS.CSV,
         file,
         session,
