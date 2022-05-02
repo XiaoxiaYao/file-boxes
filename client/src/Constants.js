@@ -3,4 +3,5 @@ export const APPLICATION_ROUTES = {
   SIGNIN: '/signin',
   SIGNUP: '/signup',
   BOX: '/box',
+  USERS: '/users',
 };

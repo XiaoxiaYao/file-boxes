@@ -43,3 +43,7 @@ export const setToPublic = (boxId) =>
 
 export const shareBox = ({ boxId, email }) =>
   axios.patch(`/boxes/${boxId}/share`, { email });
+
+export const listUsers = () => axios.get('/users/');
+
+export const deleteUser = (userId) => axios.delete(`/users/${userId}`);

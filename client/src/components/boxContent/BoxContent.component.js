@@ -3,7 +3,6 @@ import { Typography, Box, Grid, Button } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import FolderSharedIcon from '@mui/icons-material/FolderShared';
-import AttachmentIcon from '@mui/icons-material/Attachment';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 
 const BoxContent = ({ box, user }) => {
