@@ -22,3 +22,11 @@ export const currentUser = () => axios.get('/auth/current-user/');
 export const listBoxes = () => axios.get('/boxes/');
 
 export const retrieveBox = (boxId) => axios.get(`/boxes/${boxId}`);
+
+export const createBox = ({ name, description }) =>
+  axios.post('/boxes/', { name, description });
+
+export const updateBox = ({ boxId, name, description }) =>
+  axios.patch(`/boxes/${boxId}/`, { name, description });
+
+export const deleteBox = (boxId) => axios.delete(`/boxes/${boxId}`);

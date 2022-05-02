@@ -12,22 +12,38 @@ import { APPLICATION_ROUTES } from '../../Constants';
 import BoxItem from '../../components/boxItem/BoxItem.component';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
+import CreateBox from '../../components/createBox/CreateBox.component';
 
 const Home = () => {
   const [boxes, setBoxes] = useState(null);
+  const [displayCreateBox, setDisplayCreateBox] = useState(false);
 
   let navigate = useNavigate();
 
+  const fetchBoxes = async () => {
+    const { data } = await listBoxes();
+    setBoxes(data);
+  };
+
   useEffect(() => {
-    const fetchBoxes = async () => {
-      const { data } = await listBoxes();
-      setBoxes(data);
-    };
     fetchBoxes();
   }, []);
 
   const handleClickCard = (box) => {
     navigate(`${APPLICATION_ROUTES.BOX}/${box._id}`);
+  };
+
+  const handleClickCreateBoxButton = () => {
+    setDisplayCreateBox(true);
+  };
+
+  const handleBoxCreated = () => {
+    setDisplayCreateBox(false);
+    fetchBoxes();
+  };
+
+  const handleCloseCreateReview = () => {
+    setDisplayCreateBox(false);
   };
 
   return (
@@ -39,7 +55,12 @@ const Home = () => {
               <Typography variant="h6">All Boxes</Typography>
             </Grid>
             <Grid item>
-              <Fab color="primary" aria-label="add" variant="extended">
+              <Fab
+                color="primary"
+                aria-label="add"
+                variant="extended"
+                onClick={handleClickCreateBoxButton}
+              >
                 <AddIcon fontSize="small" sx={{ mr: 1 }} />
                 Create a box
               </Fab>
@@ -56,6 +77,12 @@ const Home = () => {
           ))
         )}
       </Box>
+      {displayCreateBox && (
+        <CreateBox
+          onBoxCreated={handleBoxCreated}
+          onClose={handleCloseCreateReview}
+        />
+      )}
     </Container>
   );
 };
