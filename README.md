@@ -24,3 +24,13 @@ npm run install
    `npm run start:dev`
 
 4. There is backend API docs available on `http://localhost:4001/docs`. Feel free to explore it.
+
+## Deployment
+
+### Backend projcet
+
+The backend project is deployed to Heroku via Heroku CLI which is a manual way due to some Github issues of Heroku.
+
+You can check the backend docs here:
+
+`https://file-boxes-server.herokuapp.com/docs/`
