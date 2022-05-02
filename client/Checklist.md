@@ -26,7 +26,7 @@
 
 - [x] authorization: the owned boxes are private by default
 
-- [ ] authorization: the owners may opt to turn their boxes to be public;
+- [x] authorization: the owners may opt to turn their boxes to be public;
 
 - [x] authorization: public boxes should be visible to any user (regardless their logged status);
 

@@ -33,6 +33,7 @@ export default function Header() {
     setAnchorEl(null);
     await signout();
     setUser(null);
+    window.location.assign(APPLICATION_ROUTES.ROOT);
   };
 
   return (
