@@ -6,7 +6,7 @@
 
 - [x] The user should be able to edit the box name and the description when needed.
 
-- [ ] The user should be able to upload a CSV file into the chosen box.
+- [x] The user should be able to upload a CSV file into the chosen box.
 
 - [x] Each box can contain no more than one file.
 
@@ -22,15 +22,15 @@
 
 - [x] authentication: the user should be able to log in and log out;
 
-- [ ] authorization: the logged in users become the owners of the boxes they create;
+- [x] authorization: the logged in users become the owners of the boxes they create;
 
-- [ ] authorization: the owned boxes are private by default
+- [x] authorization: the owned boxes are private by default
 
 - [ ] authorization: the owners may opt to turn their boxes to be public;
 
 - [x] authorization: public boxes should be visible to any user (regardless their logged status);
 
-- [ ] authorization: the boxes, created by unauthenticated users are public by default;
+- [x] authorization: the boxes, created by unauthenticated users are public by default;
 
 - [ ] authorization: the user should be able to delete only the boxes that they own (have created);
 

@@ -29,14 +29,17 @@ const BoxContent = ({ box, user }) => {
       </Typography>
       {box.file && (
         <>
-          <Grid container alignItems="flex-start">
-            <Grid item>
-              <AttachmentIcon />
-            </Grid>
-            <Grid item>
-              <Box component="span" m={1}>
+          <Grid container direction="column" spacing={1}>
+            <Grid item container spacing={1}>
+              <Grid item>
+                <AttachmentIcon />
+              </Grid>
+              <Grid item>
                 <Chip label={box.file.name} color="secondary" size="small" />
-              </Box>
+              </Grid>
+            </Grid>
+
+            <Grid item>
               <Button
                 variant="outlined"
                 size="small"

@@ -30,3 +30,10 @@ export const updateBox = ({ boxId, name, description }) =>
   axios.patch(`/boxes/${boxId}/`, { name, description });
 
 export const deleteBox = (boxId) => axios.delete(`/boxes/${boxId}`);
+
+export const uploadFile = (boxId, formData) =>
+  axios.post(`/boxes/${boxId}/upload-file`, formData, {
+    headers: {
+      'content-type': 'multipart/form-data',
+    },
+  });
