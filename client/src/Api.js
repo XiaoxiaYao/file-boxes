@@ -37,3 +37,6 @@ export const uploadFile = (boxId, formData) =>
       'content-type': 'multipart/form-data',
     },
   });
+
+export const setToPublic = (boxId) =>
+  axios.patch(`/boxes/${boxId}/set-to-public`);

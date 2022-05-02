@@ -8,17 +8,23 @@ import {
   Button,
   LinearProgress,
   Alert,
+  Stack,
 } from '@mui/material';
-import { retrieveBox, uploadFile } from '../../Api';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { retrieveBox, uploadFile, setToPublic } from '../../Api';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../../contexts/authContext';
 import BoxContent from '../../components/boxContent/BoxContent.component';
 import EditBox from '../../components/editBox/EditBox.component';
+import EditIcon from '@mui/icons-material/Edit';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const BoxDetail = () => {
   const [box, setBox] = useState(null);
   const [displayEditBox, setDisplayEditBox] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [isSettingToPublic, setIsSettingToPublic] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const { user } = useContext(AuthContext);
@@ -63,6 +69,17 @@ const BoxDetail = () => {
     setUploading(false);
   };
 
+  const handleSetToPublic = async () => {
+    setIsSettingToPublic(true);
+    try {
+      await setToPublic(box._id);
+      fetchBox();
+    } catch (error) {
+      setErrorMessage(error.response.data.message);
+    }
+    setIsSettingToPublic(false);
+  };
+
   return (
     <Container>
       <Box p={2}>
@@ -86,11 +103,36 @@ const BoxDetail = () => {
                   justifyContent="start"
                   alignItems="center"
                 >
-                  <Button onClick={handleClickEditButton}>Edit</Button>
-                  <Button variant="contained" component="label">
-                    Upload CSV File
-                    <input type="file" hidden onChange={handleFileChange} />
-                  </Button>
+                  <Stack spacing={1} direction="column">
+                    <Button
+                      variant="contained"
+                      onClick={handleClickEditButton}
+                      startIcon={<EditIcon />}
+                      color="warning"
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="contained"
+                      component="label"
+                      startIcon={<FileUploadIcon />}
+                      color="secondary"
+                    >
+                      Upload CSV File
+                      <input type="file" hidden onChange={handleFileChange} />
+                    </Button>
+                    {box.private && (
+                      <LoadingButton
+                        variant="contained"
+                        color="error"
+                        loading={isSettingToPublic}
+                        onClick={handleSetToPublic}
+                        startIcon={<VisibilityIcon />}
+                      >
+                        Set to public
+                      </LoadingButton>
+                    )}
+                  </Stack>
                 </Grid>
               </Grid>
             </Box>
