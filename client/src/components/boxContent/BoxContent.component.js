@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, Grid, Chip } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import FolderSharedIcon from '@mui/icons-material/FolderShared';
@@ -26,7 +26,18 @@ const BoxContent = ({ box, user }) => {
       <Typography variant="caption" color="text.secondary" component="div">
         {box.description}
       </Typography>
-      {box.file && <AttachmentIcon />}
+      {box.file && (
+        <>
+          <Grid container alignItems="flex-start" spacing={1}>
+            <Grid item>
+              <AttachmentIcon />
+            </Grid>
+            <Grid item>
+              <Chip label={box.file.name} color="secondary" size="small" />
+            </Grid>
+          </Grid>
+        </>
+      )}
     </Box>
   );
 };
