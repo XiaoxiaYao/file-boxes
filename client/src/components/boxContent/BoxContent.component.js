@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Box, Grid, Chip, Button } from '@mui/material';
+import { Typography, Box, Grid, Button } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import FolderSharedIcon from '@mui/icons-material/FolderShared';
@@ -27,30 +27,30 @@ const BoxContent = ({ box, user }) => {
       <Typography variant="caption" color="text.secondary" component="div">
         {box.description}
       </Typography>
-      {box.file && (
-        <>
-          <Grid container direction="column" spacing={1}>
-            <Grid item container spacing={1}>
-              <Grid item>
-                <AttachmentIcon />
-              </Grid>
-              <Grid item>
-                <Chip label={box.file.name} color="secondary" size="small" />
-              </Grid>
-            </Grid>
 
-            <Grid item>
-              <Button
-                variant="outlined"
-                size="small"
-                href={box.file.url}
-                startIcon={<CloudDownloadIcon fontSize="small" />}
-              >
-                Click to download
-              </Button>
+      {box.file && (
+        <Box>
+          <Grid item>
+            <AttachmentIcon />
+          </Grid>
+          <Grid container wrap="nowrap" spacing={1}>
+            <Grid item xs>
+              <Typography style={{ wordWrap: 'break-word' }}>
+                {box.file.name}
+              </Typography>
             </Grid>
           </Grid>
-        </>
+          <Grid item>
+            <Button
+              variant="outlined"
+              size="small"
+              href={box.file.url}
+              startIcon={<CloudDownloadIcon fontSize="small" />}
+            >
+              Click to download
+            </Button>
+          </Grid>
+        </Box>
       )}
     </Box>
   );

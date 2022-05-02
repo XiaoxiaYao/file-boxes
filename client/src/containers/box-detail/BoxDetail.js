@@ -74,7 +74,7 @@ const BoxDetail = () => {
             </Box>
           ) : (
             <Box py={2}>
-              <Grid container justifyContent="space-between">
+              <Grid container justifyContent="space-between" spacing={4}>
                 <Grid item xs={12} md={6}>
                   <BoxContent user={user} box={box} />
                 </Grid>
@@ -83,7 +83,7 @@ const BoxDetail = () => {
                   xs={12}
                   md={6}
                   container
-                  justifyContent="end"
+                  justifyContent="start"
                   alignItems="center"
                 >
                   <Button onClick={handleClickEditButton}>Edit</Button>
