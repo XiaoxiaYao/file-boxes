@@ -53,7 +53,7 @@ export default function Header() {
                 File Boxes
               </Typography>
             </Link>
-            {user.isSuperUser && (
+            {user && user.isSuperUser && (
               <Box sx={{ flexGrow: 1, display: { sx: 'flex' } }} ml={2}>
                 <Button
                   onClick={() => navigate(APPLICATION_ROUTES.USERS)}
