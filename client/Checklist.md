@@ -32,7 +32,7 @@
 
 - [x] authorization: the boxes, created by unauthenticated users are public by default;
 
-- [ ] authorization: the user should be able to delete only the boxes that they own (have created);
+- [x] authorization: the user should be able to delete only the boxes that they own (have created);
 
 - [ ] authorization: there may be a user with elevated privileges (superuser), who can delete any regular user and their data;
 

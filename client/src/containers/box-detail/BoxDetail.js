@@ -11,7 +11,7 @@ import {
   Stack,
 } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { retrieveBox, uploadFile, setToPublic } from '../../Api';
+import { retrieveBox, uploadFile, setToPublic, deleteBox } from '../../Api';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../../contexts/authContext';
 import BoxContent from '../../components/boxContent/BoxContent.component';
@@ -19,20 +19,28 @@ import EditBox from '../../components/editBox/EditBox.component';
 import EditIcon from '@mui/icons-material/Edit';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { useNavigate } from 'react-router-dom';
+import { APPLICATION_ROUTES } from '../../Constants';
 
 const BoxDetail = () => {
   const [box, setBox] = useState(null);
   const [displayEditBox, setDisplayEditBox] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [isSettingToPublic, setIsSettingToPublic] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const { user } = useContext(AuthContext);
   let params = useParams();
+  let navigate = useNavigate();
 
   const fetchBox = useCallback(async () => {
-    const { data } = await retrieveBox(params.boxId);
-    setBox(data);
+    try {
+      const { data } = await retrieveBox(params.boxId);
+      setBox(data);
+    } catch (error) {
+      setErrorMessage(error.response.data.message);
+    }
   }, [params.boxId]);
 
   useEffect(() => {
@@ -78,6 +86,17 @@ const BoxDetail = () => {
       setErrorMessage(error.response.data.message);
     }
     setIsSettingToPublic(false);
+  };
+
+  const handleDeleteBox = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteBox(box._id);
+      navigate(APPLICATION_ROUTES.ROOT);
+    } catch (error) {
+      setErrorMessage(error.response.data.message);
+    }
+    setIsDeleting(false);
   };
 
   return (
@@ -132,6 +151,27 @@ const BoxDetail = () => {
                         Set to public
                       </LoadingButton>
                     )}
+                    {box.owner &&
+                      (box.owner._id === user._id || box.owner.isSuperUser) && (
+                        <LoadingButton
+                          variant="contained"
+                          color="error"
+                          loading={isDeleting}
+                          onClick={handleDeleteBox}
+                          startIcon={<VisibilityIcon />}
+                        >
+                          Delete box
+                        </LoadingButton>
+                      )}
+                    <LoadingButton
+                      variant="contained"
+                      color="error"
+                      loading={isDeleting}
+                      onClick={handleDeleteBox}
+                      startIcon={<VisibilityIcon />}
+                    >
+                      Delete box
+                    </LoadingButton>
                   </Stack>
                 </Grid>
               </Grid>
