@@ -12,9 +12,9 @@
 
 - [x] The user should be able to see the list of boxes.
 
-- [ ] The user should be able to view the content of any box: the name, the description and the file name inside the box, if any.
+- [x] The user should be able to view the content of any box: the name, the description and the file name inside the box, if any.
 
-- [ ] The user should be able to «unbox» the file, that is download it from the server or storage.
+- [x] The user should be able to «unbox» the file, that is download it from the server or storage.
 
 ## Extra requirements
 

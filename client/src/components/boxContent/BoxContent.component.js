@@ -1,9 +1,10 @@
 import React from 'react';
-import { Typography, Box, Grid, Chip } from '@mui/material';
+import { Typography, Box, Grid, Chip, Button } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import FolderSharedIcon from '@mui/icons-material/FolderShared';
 import AttachmentIcon from '@mui/icons-material/Attachment';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 
 const BoxContent = ({ box, user }) => {
   return (
@@ -28,12 +29,22 @@ const BoxContent = ({ box, user }) => {
       </Typography>
       {box.file && (
         <>
-          <Grid container alignItems="flex-start" spacing={1}>
+          <Grid container alignItems="flex-start">
             <Grid item>
               <AttachmentIcon />
             </Grid>
             <Grid item>
-              <Chip label={box.file.name} color="secondary" size="small" />
+              <Box component="span" m={1}>
+                <Chip label={box.file.name} color="secondary" size="small" />
+              </Box>
+              <Button
+                variant="outlined"
+                size="small"
+                href={box.file.url}
+                startIcon={<CloudDownloadIcon fontSize="small" />}
+              >
+                Click to download
+              </Button>
             </Grid>
           </Grid>
         </>
