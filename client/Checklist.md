@@ -2,9 +2,9 @@
 
 ## Core requirements
 
-- [ ] The user should be able to create a new empty box with box name and box description.
+- [x] The user should be able to create a new empty box with box name and box description.
 
-- [ ] The user should be able to edit the box name and the description when needed.
+- [x] The user should be able to edit the box name and the description when needed.
 
 - [ ] The user should be able to upload a CSV file into the chosen box.
 

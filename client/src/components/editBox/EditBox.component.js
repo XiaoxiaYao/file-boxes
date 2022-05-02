@@ -12,29 +12,29 @@ import {
   Snackbar,
 } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { createBox } from '../../Api';
+import { updateBox } from '../../Api';
 
-const CreateBox = ({ onBoxCreated, onClose }) => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+const UpdateBox = ({ box, onBoxUpdated, onClose }) => {
+  const [name, setName] = useState(box.name);
+  const [description, setDescription] = useState(box.description);
   const [errorMessage, setErrorMessage] = useState(null);
   const [displaySuccessAlert, setDisplaySuccessAlert] = useState(false);
-  const [boxCreated, setBoxCreated] = useState(false);
+  const [boxUpdated, setBoxUpdated] = useState(false);
 
   const handleOnClose = () => {
-    if (boxCreated) {
-      onBoxCreated();
+    if (boxUpdated) {
+      onBoxUpdated();
     } else {
       onClose();
     }
   };
 
-  const handleClickCreateBoxButton = async (event) => {
+  const handleClickUpdateBoxButton = async (event) => {
     event.preventDefault();
     try {
-      await createBox({ name, description });
+      await updateBox({ boxId: box._id, name, description });
       setDisplaySuccessAlert(true);
-      setBoxCreated(true);
+      setBoxUpdated(true);
     } catch (error) {
       setErrorMessage(error.response.data.message);
     }
@@ -42,7 +42,7 @@ const CreateBox = ({ onBoxCreated, onClose }) => {
 
   return (
     <Dialog open onClose={handleOnClose} fullWidth>
-      <Box p={2} component="form" onSubmit={handleClickCreateBoxButton}>
+      <Box p={2} component="form" onSubmit={handleClickUpdateBoxButton}>
         <Grid
           container
           direction="row"
@@ -52,7 +52,7 @@ const CreateBox = ({ onBoxCreated, onClose }) => {
           xs={12}
         >
           <Typography variant="h6" component="span">
-            New Box
+            Edit Box
           </Typography>
 
           <IconButton onClick={onClose} color="error">
@@ -86,7 +86,7 @@ const CreateBox = ({ onBoxCreated, onClose }) => {
               variant="contained"
               size="small"
             >
-              Create Box
+              Update Box
             </Button>
           </Box>
         </DialogActions>
@@ -96,14 +96,14 @@ const CreateBox = ({ onBoxCreated, onClose }) => {
           autoHideDuration={6000}
           onClose={() => {
             setDisplaySuccessAlert(false);
-            onBoxCreated();
+            onBoxUpdated();
           }}
         >
-          <Alert severity="success">Box created successfully!</Alert>
+          <Alert severity="success">Box updated successfully!</Alert>
         </Snackbar>
       </Box>
     </Dialog>
   );
 };
 
-export default CreateBox;
+export default UpdateBox;
