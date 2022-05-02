@@ -40,3 +40,6 @@ export const uploadFile = (boxId, formData) =>
 
 export const setToPublic = (boxId) =>
   axios.patch(`/boxes/${boxId}/set-to-public`);
+
+export const shareBox = ({ boxId, email }) =>
+  axios.patch(`/boxes/${boxId}/share`, { email });

@@ -21,17 +21,29 @@ const BoxContent = ({ box, user }) => {
       ) : (
         <LockOpenIcon fontSize="small" />
       )}
-      <Typography variant="subtitle1" component="div">
-        {box.name}
-      </Typography>
-      <Typography variant="caption" color="text.secondary" component="div">
-        {box.description}
-      </Typography>
+      <Box>
+        <Typography variant="button" component="span">
+          {`Name: `}
+        </Typography>
+        <Typography variant="subtitle1" component="span">
+          {box.name}
+        </Typography>
+      </Box>
+      <Box>
+        <Typography variant="button" component="span">
+          {`Description: `}
+        </Typography>
+        <Typography variant="caption" color="text.secondary" component="span">
+          {box.description}
+        </Typography>
+      </Box>
 
       {box.file && (
         <Box>
-          <Grid item>
-            <AttachmentIcon />
+          <Grid container>
+            <Typography variant="button" component="span">
+              {`File Name: `}
+            </Typography>
           </Grid>
           <Grid container wrap="nowrap" spacing={1}>
             <Grid item xs>
@@ -41,14 +53,16 @@ const BoxContent = ({ box, user }) => {
             </Grid>
           </Grid>
           <Grid item>
-            <Button
-              variant="outlined"
-              size="small"
-              href={box.file.url}
-              startIcon={<CloudDownloadIcon fontSize="small" />}
-            >
-              Click to download
-            </Button>
+            <Box mt={1}>
+              <Button
+                variant="outlined"
+                size="small"
+                href={box.file.url}
+                startIcon={<CloudDownloadIcon fontSize="small" />}
+              >
+                Click to download
+              </Button>
+            </Box>
           </Grid>
         </Box>
       )}

@@ -8,6 +8,7 @@ import {
   Button,
   LinearProgress,
   Alert,
+  Chip,
   Stack,
 } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -19,12 +20,16 @@ import EditBox from '../../components/editBox/EditBox.component';
 import EditIcon from '@mui/icons-material/Edit';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import ShareIcon from '@mui/icons-material/Share';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useNavigate } from 'react-router-dom';
 import { APPLICATION_ROUTES } from '../../Constants';
+import ShareBox from '../../components/shareBox/ShareBox.component';
 
 const BoxDetail = () => {
   const [box, setBox] = useState(null);
   const [displayEditBox, setDisplayEditBox] = useState(false);
+  const [displayShareBox, setDisplayShareBox] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [isSettingToPublic, setIsSettingToPublic] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -58,6 +63,19 @@ const BoxDetail = () => {
 
   const handleCloseUpdateBox = () => {
     setDisplayEditBox(false);
+  };
+
+  const handleClickShareButton = () => {
+    setDisplayShareBox(true);
+  };
+
+  const handleBoxShared = () => {
+    setDisplayShareBox(false);
+    fetchBox();
+  };
+
+  const handleCloseShareBox = () => {
+    setDisplayShareBox(false);
   };
 
   const handleFileChange = async (event) => {
@@ -103,7 +121,7 @@ const BoxDetail = () => {
     <Container>
       <Box p={2}>
         <Box mb={2}>
-          <Typography variant="h6">Box:</Typography>
+          <Typography variant="h6">Box</Typography>
           {!box ? (
             <Box sx={{ display: 'flex' }}>
               <CircularProgress />
@@ -113,13 +131,30 @@ const BoxDetail = () => {
               <Grid container justifyContent="space-between" spacing={4}>
                 <Grid item xs={12} md={6}>
                   <BoxContent user={user} box={box} />
+                  {box.accessAllowedUser.length > 0 && (
+                    <Box mt={2}>
+                      <Box mb={1}>
+                        <Typography variant="button" component="span">
+                          {`Shared With: `}
+                        </Typography>
+                      </Box>
+                      <Stack direction="row" spacing={1}>
+                        {box.accessAllowedUser.map((accessAllowedUser) => (
+                          <Chip
+                            label={accessAllowedUser.email}
+                            variant="outlined"
+                          />
+                        ))}
+                      </Stack>
+                    </Box>
+                  )}
                 </Grid>
                 <Grid
                   item
                   xs={12}
                   md={6}
                   container
-                  justifyContent="start"
+                  justifyContent="center"
                   alignItems="center"
                 >
                   <Stack spacing={1} direction="column">
@@ -151,27 +186,28 @@ const BoxDetail = () => {
                         Set to public
                       </LoadingButton>
                     )}
-                    {box.owner &&
-                      (box.owner._id === user._id || box.owner.isSuperUser) && (
+                    {box.private &&
+                      (box.owner === user._id || box.owner.isSuperUser) && (
                         <LoadingButton
                           variant="contained"
                           color="error"
                           loading={isDeleting}
                           onClick={handleDeleteBox}
-                          startIcon={<VisibilityIcon />}
+                          startIcon={<DeleteForeverIcon />}
                         >
                           Delete box
                         </LoadingButton>
                       )}
-                    <LoadingButton
-                      variant="contained"
-                      color="error"
-                      loading={isDeleting}
-                      onClick={handleDeleteBox}
-                      startIcon={<VisibilityIcon />}
-                    >
-                      Delete box
-                    </LoadingButton>
+                    {box.private && box.owner === user._id && (
+                      <Button
+                        variant="contained"
+                        onClick={handleClickShareButton}
+                        startIcon={<ShareIcon />}
+                        color="success"
+                      >
+                        Share
+                      </Button>
+                    )}
                   </Stack>
                 </Grid>
               </Grid>
@@ -185,12 +221,18 @@ const BoxDetail = () => {
         )}
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       </Box>
-
       {displayEditBox && (
         <EditBox
           box={box}
           onBoxUpdated={handleBoxUpdated}
           onClose={handleCloseUpdateBox}
+        />
+      )}
+      {displayShareBox && (
+        <ShareBox
+          boxId={box._id}
+          onBoxShared={handleBoxShared}
+          onClose={handleCloseShareBox}
         />
       )}
     </Container>
