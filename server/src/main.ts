@@ -34,6 +34,13 @@ async function bootstrap() {
   };
   SwaggerModule.setup('docs', app, document, customOptions);
 
+  // Cors issue
+  app.enableCors({
+    methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD', 'DELETE', 'PATCH'],
+    credentials: true,
+    exposedHeaders: ['Set-Cookie'],
+  });
+
   app.use(cookieParser());
 
   // Config PORT
