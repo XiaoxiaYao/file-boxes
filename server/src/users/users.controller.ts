@@ -1,4 +1,4 @@
-import { Controller, Delete, Param, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, UseGuards } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { SuperUserGuard } from 'src/boxes/guards/super-user.guard';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -20,5 +20,12 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   remove(@Param() { id }: ParamsWithId) {
     return this.usersService.remove(id);
+  }
+
+  @Get()
+  @UseGuards(SuperUserGuard)
+  @UseGuards(JwtAuthGuard)
+  users() {
+    return this.usersService.findAll();
   }
 }

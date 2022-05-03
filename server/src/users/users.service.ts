@@ -67,4 +67,8 @@ export class UsersService {
       return 'User deleted!';
     }
   }
+
+  async findAll() {
+    return await this.userModel.find();
+  }
 }
