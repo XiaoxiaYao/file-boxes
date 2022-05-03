@@ -7,6 +7,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { BoxesModule } from './boxes/boxes.module';
 import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
 import { FileModule } from './file/file.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -36,6 +38,10 @@ import { FileModule } from './file/file.module';
     BoxesModule,
     CloudStorageModule,
     FileModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'build'),
+      // exclude: ['/api*'],
+    }),
   ],
 })
 export class AppModule {}

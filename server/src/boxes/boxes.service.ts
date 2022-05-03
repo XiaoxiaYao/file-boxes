@@ -53,7 +53,12 @@ export class BoxesService {
       $or: [
         { owner: user._id },
         { private: false },
-        { $and: [{ private: true }, { accessAllowedUser: user }] },
+        {
+          $and: [
+            { private: true },
+            { accessAllowedUser: { $elemMatch: { _id: user._id } } },
+          ],
+        },
       ],
     });
   }

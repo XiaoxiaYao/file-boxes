@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import {
   DocumentBuilder,
   SwaggerCustomOptions,
@@ -10,7 +11,8 @@ import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.set('trust proxy', 1);
 
   app.setGlobalPrefix('/api');
   // Global Validation
@@ -37,6 +39,11 @@ async function bootstrap() {
 
   // Cors issue
   app.enableCors({
+    origin: [
+      'https://file-boxes-client.herokuapp.com',
+      'http://localhost:3000',
+      'http://localhost:4001',
+    ],
     methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD', 'DELETE', 'PATCH'],
     credentials: true,
     exposedHeaders: ['Set-Cookie'],

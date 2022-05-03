@@ -25,11 +25,14 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useNavigate } from 'react-router-dom';
 import { APPLICATION_ROUTES } from '../../Constants';
 import ShareBox from '../../components/shareBox/ShareBox.component';
+import PreviewIcon from '@mui/icons-material/Preview';
+import PreviewBox from '../../components/boxPreview/PreviewBox.component';
 
 const BoxDetail = () => {
   const [box, setBox] = useState(null);
   const [displayEditBox, setDisplayEditBox] = useState(false);
   const [displayShareBox, setDisplayShareBox] = useState(false);
+  const [displayPreviewFile, setDisplayPreviewFile] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [isSettingToPublic, setIsSettingToPublic] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -117,6 +120,14 @@ const BoxDetail = () => {
     setIsDeleting(false);
   };
 
+  const handleClickPreviewButton = () => {
+    setDisplayPreviewFile(true);
+  };
+
+  const handleClosePreviewFile = () => {
+    setDisplayPreviewFile(false);
+  };
+
   return (
     <Container>
       <Box p={2}>
@@ -141,6 +152,7 @@ const BoxDetail = () => {
                       <Stack direction="row" spacing={1}>
                         {box.accessAllowedUser.map((accessAllowedUser) => (
                           <Chip
+                            key={accessAllowedUser._id}
                             label={accessAllowedUser.email}
                             variant="outlined"
                           />
@@ -175,6 +187,16 @@ const BoxDetail = () => {
                       Upload CSV File
                       <input type="file" hidden onChange={handleFileChange} />
                     </Button>
+                    {box.file && (
+                      <Button
+                        variant="contained"
+                        onClick={handleClickPreviewButton}
+                        startIcon={<PreviewIcon />}
+                        color="success"
+                      >
+                        Preview the file
+                      </Button>
+                    )}
                     {box.private && (
                       <LoadingButton
                         variant="contained"
@@ -234,6 +256,9 @@ const BoxDetail = () => {
           onBoxShared={handleBoxShared}
           onClose={handleCloseShareBox}
         />
+      )}
+      {displayPreviewFile && (
+        <PreviewBox box={box} onClose={handleClosePreviewFile} />
       )}
     </Container>
   );

@@ -50,12 +50,12 @@ export class AuthService {
       isSuperUser: user.isSuperUser,
     };
     const token = this.jwtService.sign(payload);
-    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get<string>(
+    return `Authentication=${token}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${this.configService.get<string>(
       'AUTH_JWT_EXPIRATION',
     )}`;
   }
 
   public getCookieForSignOut() {
-    return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
+    return `Authentication=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0`;
   }
 }
