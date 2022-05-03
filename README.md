@@ -35,7 +35,7 @@ npm run install
 npm run install
 ```
 
-3. Star the backend app
+3. Star the frontend app
    `npm run start`
 
 ## Deployment
