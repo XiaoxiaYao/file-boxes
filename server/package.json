@@ -12,7 +12,7 @@
     "start": "cross-env NODE_ENV=development nest start",
     "start:dev": "cross-env NODE_ENV=development nest start --watch",
     "start:debug": "cross-env NODE_ENV=development nest start --debug --watch",
-    "start:prod": "npm run build-client && nest build && node dist/main",
+    "start:prod": "node dist/main",
     "build-client": "cd ../client && npm run build && cp -R  build ../server/build",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
