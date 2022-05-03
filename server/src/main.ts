@@ -39,11 +39,7 @@ async function bootstrap() {
 
   // Cors issue
   app.enableCors({
-    origin: [
-      'https://file-boxes-client.herokuapp.com',
-      'http://localhost:3000',
-      'http://localhost:4001',
-    ],
+    origin: ['http://localhost:3000'],
     methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD', 'DELETE', 'PATCH'],
     credentials: true,
     exposedHeaders: ['Set-Cookie'],

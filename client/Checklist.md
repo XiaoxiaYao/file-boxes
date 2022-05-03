@@ -38,8 +38,8 @@
 
 - [x] authorization: the users may share their boxes with other specific users by knowing their usernames or emails.
 
-- [ ] a good description of how to run the application in the development mode and how to deploy it to production.
+- [x] a good description of how to run the application in the development mode and how to deploy it to production.
 
 - [x] cloud-based storage for the CSV files
 
-- [ ] thoughts on the overall application architecture, the security concerns, vision on how to improve and evolve this application in the future
+- [x] thoughts on the overall application architecture, the security concerns, vision on how to improve and evolve this application in the future
