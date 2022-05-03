@@ -18,7 +18,7 @@
 
 ## Extra requirements
 
-- [ ] the box view UI may contain a subsequent or embedded UI for viewing the content of the CSV file.
+- [x] the box view UI may contain a subsequent or embedded UI for viewing the content of the CSV file.
 
 - [x] authentication: the user should be able to log in and log out;
 
@@ -36,7 +36,7 @@
 
 - [ ] authorization: there may be a user with elevated privileges (superuser), who can delete any regular user and their data;
 
-- [ ] authorization: the users may share their boxes with other specific users by knowing their usernames or emails.
+- [x] authorization: the users may share their boxes with other specific users by knowing their usernames or emails.
 
 - [ ] a good description of how to run the application in the development mode and how to deploy it to production.
 
