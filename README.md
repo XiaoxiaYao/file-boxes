@@ -63,3 +63,17 @@ npm run build-client
 3. The Heroku app has been created and the production environment variables have been configured.
 
 4. Use Heroku CLI to deploy to cloud. [Heroku CLI](https://devcenter.heroku.com/articles/git)
+
+## Unit tests
+
+### Backend project
+
+1. cd into server folder
+
+2. Run the tests
+
+```
+npm run test
+```
+
+3. Need to write more unit tests and make sure the test coverage is above 95%.

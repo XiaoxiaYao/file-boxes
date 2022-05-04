@@ -34,7 +34,7 @@
 
 - [x] authorization: the user should be able to delete only the boxes that they own (have created);
 
-- [ ] authorization: there may be a user with elevated privileges (superuser), who can delete any regular user and their data;
+- [x] authorization: there may be a user with elevated privileges (superuser), who can delete any regular user and their data;
 
 - [x] authorization: the users may share their boxes with other specific users by knowing their usernames or emails.
 
