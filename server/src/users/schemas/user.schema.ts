@@ -17,6 +17,7 @@ export class User {
 
   @Prop({ default: false })
   isSuperUser: boolean;
+  mockedUser: import('mongoose').Types.ObjectId;
 }
 
 let TempUserSchema = SchemaFactory.createForClass(User);
