@@ -212,18 +212,18 @@ const BoxDetail = () => {
                           Set to public
                         </LoadingButton>
                       )}
-                      {box.private &&
-                        (box.owner._id === user._id || user.isSuperUser) && (
-                          <LoadingButton
-                            variant="contained"
-                            color="error"
-                            loading={isDeleting}
-                            onClick={handleDeleteBox}
-                            startIcon={<DeleteForeverIcon />}
-                          >
-                            Delete box
-                          </LoadingButton>
-                        )}
+                      {((box.private && box.owner._id === user._id) ||
+                        user.isSuperUser) && (
+                        <LoadingButton
+                          variant="contained"
+                          color="error"
+                          loading={isDeleting}
+                          onClick={handleDeleteBox}
+                          startIcon={<DeleteForeverIcon />}
+                        >
+                          Delete box
+                        </LoadingButton>
+                      )}
                       {box.private && box.owner._id === user._id && (
                         <Button
                           variant="contained"
