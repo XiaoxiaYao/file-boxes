@@ -37,18 +37,21 @@ const BoxDetail = () => {
   const [isSettingToPublic, setIsSettingToPublic] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoadingData, setIsLoadingData] = useState(false);
 
   const { user } = useContext(AuthContext);
   let params = useParams();
   let navigate = useNavigate();
 
   const fetchBox = useCallback(async () => {
+    setIsLoadingData(true);
     try {
       const { data } = await retrieveBox(params.boxId);
       setBox(data);
     } catch (error) {
       setErrorMessage(error.response.data.message);
     }
+    setIsLoadingData(false);
   }, [params.boxId]);
 
   useEffect(() => {
@@ -133,107 +136,109 @@ const BoxDetail = () => {
       <Box p={2}>
         <Box mb={2}>
           <Typography variant="h6">Box</Typography>
-          {!box ? (
+          {isLoadingData ? (
             <Box sx={{ display: 'flex' }}>
               <CircularProgress />
             </Box>
           ) : (
-            <Box py={2}>
-              <Grid container justifyContent="space-between" spacing={4}>
-                <Grid item xs={12} md={6}>
-                  <BoxContent user={user} box={box} />
-                  {box.accessAllowedUser.length > 0 && (
-                    <Box mt={2}>
-                      <Box mb={1}>
-                        <Typography variant="button" component="span">
-                          {`Shared With: `}
-                        </Typography>
+            box && (
+              <Box py={2}>
+                <Grid container justifyContent="space-between" spacing={4}>
+                  <Grid item xs={12} md={6}>
+                    <BoxContent user={user} box={box} />
+                    {box.accessAllowedUser.length > 0 && (
+                      <Box mt={2}>
+                        <Box mb={1}>
+                          <Typography variant="button" component="span">
+                            {`Shared With: `}
+                          </Typography>
+                        </Box>
+                        <Stack direction="row" spacing={1}>
+                          {box.accessAllowedUser.map((accessAllowedUser) => (
+                            <Chip
+                              key={accessAllowedUser._id}
+                              label={accessAllowedUser.email}
+                              variant="outlined"
+                            />
+                          ))}
+                        </Stack>
                       </Box>
-                      <Stack direction="row" spacing={1}>
-                        {box.accessAllowedUser.map((accessAllowedUser) => (
-                          <Chip
-                            key={accessAllowedUser._id}
-                            label={accessAllowedUser.email}
-                            variant="outlined"
-                          />
-                        ))}
-                      </Stack>
-                    </Box>
-                  )}
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  md={6}
-                  container
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <Stack spacing={1} direction="column">
-                    <Button
-                      variant="contained"
-                      onClick={handleClickEditButton}
-                      startIcon={<EditIcon />}
-                      color="warning"
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="contained"
-                      component="label"
-                      startIcon={<FileUploadIcon />}
-                      color="secondary"
-                    >
-                      Upload CSV File
-                      <input type="file" hidden onChange={handleFileChange} />
-                    </Button>
-                    {box.file && (
+                    )}
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    md={6}
+                    container
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Stack spacing={1} direction="column">
                       <Button
                         variant="contained"
-                        onClick={handleClickPreviewButton}
-                        startIcon={<PreviewIcon />}
-                        color="success"
+                        onClick={handleClickEditButton}
+                        startIcon={<EditIcon />}
+                        color="warning"
                       >
-                        Preview the file
+                        Edit
                       </Button>
-                    )}
-                    {box.private && (
-                      <LoadingButton
+                      <Button
                         variant="contained"
-                        color="error"
-                        loading={isSettingToPublic}
-                        onClick={handleSetToPublic}
-                        startIcon={<VisibilityIcon />}
+                        component="label"
+                        startIcon={<FileUploadIcon />}
+                        color="secondary"
                       >
-                        Set to public
-                      </LoadingButton>
-                    )}
-                    {box.private &&
-                      (box.owner === user._id || box.owner.isSuperUser) && (
+                        Upload CSV File
+                        <input type="file" hidden onChange={handleFileChange} />
+                      </Button>
+                      {box.file && (
+                        <Button
+                          variant="contained"
+                          onClick={handleClickPreviewButton}
+                          startIcon={<PreviewIcon />}
+                          color="success"
+                        >
+                          Preview the file
+                        </Button>
+                      )}
+                      {box.private && (
                         <LoadingButton
                           variant="contained"
                           color="error"
-                          loading={isDeleting}
-                          onClick={handleDeleteBox}
-                          startIcon={<DeleteForeverIcon />}
+                          loading={isSettingToPublic}
+                          onClick={handleSetToPublic}
+                          startIcon={<VisibilityIcon />}
                         >
-                          Delete box
+                          Set to public
                         </LoadingButton>
                       )}
-                    {box.private && box.owner === user._id && (
-                      <Button
-                        variant="contained"
-                        onClick={handleClickShareButton}
-                        startIcon={<ShareIcon />}
-                        color="success"
-                      >
-                        Share
-                      </Button>
-                    )}
-                  </Stack>
+                      {box.private &&
+                        (box.owner === user._id || box.owner.isSuperUser) && (
+                          <LoadingButton
+                            variant="contained"
+                            color="error"
+                            loading={isDeleting}
+                            onClick={handleDeleteBox}
+                            startIcon={<DeleteForeverIcon />}
+                          >
+                            Delete box
+                          </LoadingButton>
+                        )}
+                      {box.private && box.owner === user._id && (
+                        <Button
+                          variant="contained"
+                          onClick={handleClickShareButton}
+                          startIcon={<ShareIcon />}
+                          color="success"
+                        >
+                          Share
+                        </Button>
+                      )}
+                    </Stack>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Box>
+              </Box>
+            )
           )}
         </Box>
         {uploading && (

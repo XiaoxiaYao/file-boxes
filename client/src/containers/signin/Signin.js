@@ -5,10 +5,10 @@ import {
   TextField,
   Typography,
   Paper,
-  Button,
   Alert,
   Link,
 } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { signin } from '../../Api';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { APPLICATION_ROUTES } from '../../Constants';
@@ -18,6 +18,7 @@ const Signin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isSigning, setIsSigning] = useState(false);
 
   const { setUser } = useContext(AuthContext);
 
@@ -26,6 +27,7 @@ const Signin = () => {
   const handleClickSigninButton = async (event) => {
     event.preventDefault();
     setErrorMessage('');
+    setIsSigning(true);
     try {
       const { data } = await signin({ email, password });
       setUser(data);
@@ -33,6 +35,7 @@ const Signin = () => {
     } catch (error) {
       setErrorMessage(error.response.data.message);
     }
+    setIsSigning(false);
   };
 
   return (
@@ -65,14 +68,15 @@ const Signin = () => {
             {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
 
             <Box my={2}>
-              <Button
+              <LoadingButton
                 type="submit"
                 fullWidth
                 variant="contained"
                 color="primary"
+                loading={isSigning}
               >
                 Sign In
-              </Button>
+              </LoadingButton>
             </Box>
             <Box py={1.5}>
               {"Don't have an account? Go to "}

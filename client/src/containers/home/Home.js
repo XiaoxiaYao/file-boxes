@@ -17,12 +17,15 @@ import CreateBox from '../../components/createBox/CreateBox.component';
 const Home = () => {
   const [boxes, setBoxes] = useState(null);
   const [displayCreateBox, setDisplayCreateBox] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(false);
 
   let navigate = useNavigate();
 
   const fetchBoxes = async () => {
+    setIsLoadingData(true);
     const { data } = await listBoxes();
     setBoxes(data);
+    setIsLoadingData(false);
   };
 
   useEffect(() => {
@@ -67,11 +70,12 @@ const Home = () => {
             </Grid>
           </Grid>
         </Box>
-        {!boxes ? (
+        {isLoadingData ? (
           <Box sx={{ display: 'flex' }}>
             <CircularProgress />
           </Box>
         ) : (
+          boxes &&
           boxes.map((box) => (
             <BoxItem key={box._id} box={box} handleClick={handleClickCard} />
           ))

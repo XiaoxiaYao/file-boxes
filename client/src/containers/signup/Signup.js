@@ -5,10 +5,10 @@ import {
   TextField,
   Typography,
   Paper,
-  Button,
   Alert,
   Link,
 } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import { signup } from '../../Api';
 import { useNavigate } from 'react-router-dom';
 import { APPLICATION_ROUTES } from '../../Constants';
@@ -19,6 +19,7 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const { setUser } = useContext(AuthContext);
 
@@ -28,6 +29,7 @@ const Signup = () => {
     event.preventDefault();
     // TODO: Do client form validation
     setErrorMessage('');
+    setIsLoading(true);
     try {
       const { data } = await signup({ email, password });
       setUser(data);
@@ -35,6 +37,7 @@ const Signup = () => {
     } catch (error) {
       setErrorMessage(error.response.data.message);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -67,14 +70,15 @@ const Signup = () => {
             {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
 
             <Box my={2}>
-              <Button
+              <LoadingButton
                 fullWidth
                 type="submit"
                 variant="contained"
                 color="primary"
+                loading={isLoading}
               >
                 Sign Up
-              </Button>
+              </LoadingButton>
             </Box>
             <Box py={1.5}>
               {'Already have an account? Go to '}
