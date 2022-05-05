@@ -20,6 +20,16 @@ const BoxContent = ({ box, user }) => {
       ) : (
         <LockOpenIcon fontSize="small" />
       )}
+      {box.owner && (
+        <Box>
+          <Typography variant="button" component="span">
+            {`Owner: `}
+          </Typography>
+          <Typography variant="subtitle1" component="span">
+            {box.owner.email}
+          </Typography>
+        </Box>
+      )}
       <Box>
         <Typography variant="button" component="span">
           {`Name: `}

@@ -49,18 +49,20 @@ export class BoxesService {
     }
 
     // Non super user can read its own or allowed access and public boxes.
-    return this.boxModel.find({
-      $or: [
-        { owner: user._id },
-        { private: false },
-        {
-          $and: [
-            { private: true },
-            { accessAllowedUser: { $elemMatch: { _id: user._id } } },
-          ],
-        },
-      ],
-    });
+    return this.boxModel
+      .find({
+        $or: [
+          { owner: user._id },
+          { private: false },
+          {
+            $and: [
+              { private: true },
+              { accessAllowedUser: { $elemMatch: { _id: user._id } } },
+            ],
+          },
+        ],
+      })
+      .populate('owner');
   }
 
   async uploadFile(boxId: string, file: Express.Multer.File) {
@@ -100,7 +102,7 @@ export class BoxesService {
   }
 
   async findOne(id: string) {
-    return await this.boxModel.findById(id);
+    return await this.boxModel.findById(id).populate('owner');
   }
 
   async findAllOwned(ownerId: string) {
