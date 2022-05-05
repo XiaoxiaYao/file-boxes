@@ -201,7 +201,7 @@ const BoxDetail = () => {
                           Preview the file
                         </Button>
                       )}
-                      {box.private && (
+                      {box.private && box.owner._id === user._id && (
                         <LoadingButton
                           variant="contained"
                           color="error"
@@ -213,7 +213,7 @@ const BoxDetail = () => {
                         </LoadingButton>
                       )}
                       {box.private &&
-                        (box.owner === user._id || box.owner.isSuperUser) && (
+                        (box.owner._id === user._id || user.isSuperUser) && (
                           <LoadingButton
                             variant="contained"
                             color="error"
@@ -224,7 +224,7 @@ const BoxDetail = () => {
                             Delete box
                           </LoadingButton>
                         )}
-                      {box.private && box.owner === user._id && (
+                      {box.private && box.owner._id === user._id && (
                         <Button
                           variant="contained"
                           onClick={handleClickShareButton}
