@@ -44,8 +44,7 @@ export default function Header() {
         <Toolbar>
           <Grid alignItems="center" container>
             <Link
-              component={RouterLink}
-              to={APPLICATION_ROUTES.ROOT}
+              href={APPLICATION_ROUTES.ROOT}
               color="inherit"
               style={{ textDecoration: 'none' }}
             >
