@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import {
   Dialog,
-  Box,
   Typography,
   IconButton,
   Grid,
   TextField,
   DialogActions,
-  Button,
+  Box,
   Alert,
   Snackbar,
 } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { createBox } from '../../Api';
 
@@ -20,6 +20,7 @@ const CreateBox = ({ onBoxCreated, onClose }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [displaySuccessAlert, setDisplaySuccessAlert] = useState(false);
   const [boxCreated, setBoxCreated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleOnClose = () => {
     if (boxCreated) {
@@ -31,6 +32,7 @@ const CreateBox = ({ onBoxCreated, onClose }) => {
 
   const handleClickCreateBoxButton = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
     try {
       await createBox({ name, description });
       setDisplaySuccessAlert(true);
@@ -38,6 +40,7 @@ const CreateBox = ({ onBoxCreated, onClose }) => {
     } catch (error) {
       setErrorMessage(error.response.data.message);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -80,20 +83,21 @@ const CreateBox = ({ onBoxCreated, onClose }) => {
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <DialogActions>
           <Box mt={2}>
-            <Button
+            <LoadingButton
               type="submit"
               color="primary"
               variant="contained"
               size="small"
+              loading={isLoading}
             >
               Create Box
-            </Button>
+            </LoadingButton>
           </Box>
         </DialogActions>
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           open={displaySuccessAlert}
-          autoHideDuration={6000}
+          autoHideDuration={3000}
           onClose={() => {
             setDisplaySuccessAlert(false);
             onBoxCreated();

@@ -7,10 +7,10 @@ import {
   Grid,
   TextField,
   DialogActions,
-  Button,
   Alert,
   Snackbar,
 } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { shareBox } from '../../Api';
 
@@ -19,6 +19,7 @@ const ShareBox = ({ boxId, onBoxShared, onClose }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [displaySuccessAlert, setDisplaySuccessAlert] = useState(false);
   const [boxShared, setBoxShared] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleOnClose = () => {
     if (boxShared) {
@@ -30,6 +31,7 @@ const ShareBox = ({ boxId, onBoxShared, onClose }) => {
 
   const handleClickShareBoxButton = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
     try {
       await shareBox({ boxId, email });
       setDisplaySuccessAlert(true);
@@ -37,6 +39,7 @@ const ShareBox = ({ boxId, onBoxShared, onClose }) => {
     } catch (error) {
       setErrorMessage(error.response.data.message);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -71,20 +74,21 @@ const ShareBox = ({ boxId, onBoxShared, onClose }) => {
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <DialogActions>
           <Box mt={2}>
-            <Button
+            <LoadingButton
               type="submit"
               color="primary"
               variant="contained"
               size="small"
+              loading={isLoading}
             >
               Share it
-            </Button>
+            </LoadingButton>
           </Box>
         </DialogActions>
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           open={displaySuccessAlert}
-          autoHideDuration={6000}
+          autoHideDuration={3000}
           onClose={() => {
             setDisplaySuccessAlert(false);
             onBoxShared();

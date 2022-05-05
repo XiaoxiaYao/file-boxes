@@ -7,10 +7,10 @@ import {
   Grid,
   TextField,
   DialogActions,
-  Button,
   Alert,
   Snackbar,
 } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { updateBox } from '../../Api';
 
@@ -20,6 +20,7 @@ const UpdateBox = ({ box, onBoxUpdated, onClose }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [displaySuccessAlert, setDisplaySuccessAlert] = useState(false);
   const [boxUpdated, setBoxUpdated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleOnClose = () => {
     if (boxUpdated) {
@@ -31,6 +32,7 @@ const UpdateBox = ({ box, onBoxUpdated, onClose }) => {
 
   const handleClickUpdateBoxButton = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
     try {
       await updateBox({ boxId: box._id, name, description });
       setDisplaySuccessAlert(true);
@@ -38,6 +40,7 @@ const UpdateBox = ({ box, onBoxUpdated, onClose }) => {
     } catch (error) {
       setErrorMessage(error.response.data.message);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -80,20 +83,21 @@ const UpdateBox = ({ box, onBoxUpdated, onClose }) => {
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <DialogActions>
           <Box mt={2}>
-            <Button
+            <LoadingButton
               type="submit"
               color="primary"
               variant="contained"
               size="small"
+              loading={isLoading}
             >
               Update Box
-            </Button>
+            </LoadingButton>
           </Box>
         </DialogActions>
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           open={displaySuccessAlert}
-          autoHideDuration={6000}
+          autoHideDuration={3000}
           onClose={() => {
             setDisplaySuccessAlert(false);
             onBoxUpdated();
