@@ -3,7 +3,7 @@ import axios from 'axios';
 axios.defaults.baseURL =
   process.env.NODE_ENV !== 'development'
     ? 'https://file-boxes-server.herokuapp.com'
-    : process.env.REACT_APP_BACKEND_URL;
+    : 'http://localhost:4001';
 axios.defaults.withCredentials = true;
 
 export const signup = ({ email, password }) =>

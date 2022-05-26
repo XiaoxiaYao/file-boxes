@@ -8,13 +8,13 @@ import {
   Button,
   Popover,
   Grid,
-  Link,
+  Link as MUILink,
 } from '@mui/material';
 import { AuthContext } from '../../contexts/authContext';
 import { signout } from '../../Api';
 import { APPLICATION_ROUTES } from '../../Constants';
 import { useRouter } from 'next/router';
-import { Link as RouterLink } from 'next/link';
+import Link from 'next/link';
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -43,7 +43,7 @@ export default function Header() {
       <AppBar position="static">
         <Toolbar>
           <Grid alignItems="center" container>
-            <Link
+            <MUILink
               href={APPLICATION_ROUTES.ROOT}
               color="inherit"
               style={{ textDecoration: 'none' }}
@@ -51,7 +51,7 @@ export default function Header() {
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 File Boxes
               </Typography>
-            </Link>
+            </MUILink>
             {user && user.isSuperUser && (
               <Box sx={{ flexGrow: 1, display: { sx: 'flex' } }} ml={2}>
                 <Button
@@ -64,12 +64,8 @@ export default function Header() {
             )}
           </Grid>
           {!user ? (
-            <Link
-              component={RouterLink}
-              to={APPLICATION_ROUTES.SIGNIN}
-              color="inherit"
-            >
-              Signin
+            <Link href={APPLICATION_ROUTES.SIGNIN} passHref>
+              <MUILink color="inherit">Signin</MUILink>
             </Link>
           ) : (
             <Avatar aria-describedby={id} onClick={handleClickAvatar}>
