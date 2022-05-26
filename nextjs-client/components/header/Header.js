@@ -13,15 +13,15 @@ import {
 import { AuthContext } from '../../contexts/authContext';
 import { signout } from '../../Api';
 import { APPLICATION_ROUTES } from '../../Constants';
-import { Link as RouterLink } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
+import { Link as RouterLink } from 'next/link';
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const { user, setUser } = useContext(AuthContext);
   const open = Boolean(anchorEl);
   const id = open ? 'avatar' : undefined;
-  let navigate = useNavigate();
+  let router = useRouter();
 
   const handleClickAvatar = (event) => {
     setAnchorEl(event.currentTarget);
@@ -55,7 +55,7 @@ export default function Header() {
             {user && user.isSuperUser && (
               <Box sx={{ flexGrow: 1, display: { sx: 'flex' } }} ml={2}>
                 <Button
-                  onClick={() => navigate(APPLICATION_ROUTES.USERS)}
+                  onClick={() => router.push(APPLICATION_ROUTES.USERS)}
                   sx={{ my: 2, color: 'white', display: 'block' }}
                 >
                   Users
