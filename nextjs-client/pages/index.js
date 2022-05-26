@@ -33,7 +33,7 @@ const Home = () => {
   }, []);
 
   const handleClickCard = (box) => {
-    navigate(`${APPLICATION_ROUTES.BOX}/${box._id}`);
+    router.push(`${APPLICATION_ROUTES.BOX}/${box._id}`);
   };
 
   const handleClickCreateBoxButton = () => {

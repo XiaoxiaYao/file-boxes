@@ -60,8 +60,8 @@ const PreviewBox = ({ box, onClose }) => {
                           '&:last-child td, &:last-child th': { border: 0 },
                         }}
                       >
-                        {row.map((column) => (
-                          <TableCell>{column}</TableCell>
+                        {row.map((column, index) => (
+                          <TableCell key={index}>{column}</TableCell>
                         ))}
                       </TableRow>
                     );
