@@ -8,6 +8,7 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import CreateBox from '../components/createBox/CreateBox.component';
 import Router from 'next/router';
+import axios from 'axios';
 
 const Home = (props) => {
   const [displayCreateBox, setDisplayCreateBox] = useState(false);
@@ -80,7 +81,8 @@ const Home = (props) => {
   );
 };
 
-export async function getServerSideProps() {
+export async function getServerSideProps(ctx) {
+  axios.defaults.headers = ctx.req.headers;
   const { data } = await listBoxes();
 
   return {

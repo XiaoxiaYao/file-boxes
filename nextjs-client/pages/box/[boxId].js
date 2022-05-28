@@ -26,6 +26,7 @@ import PreviewIcon from '@mui/icons-material/Preview';
 import PreviewBox from '../../components/boxPreview/PreviewBox.component';
 import { useRouter } from 'next/router';
 import Router from 'next/router';
+import axios from 'axios';
 
 const BoxDetail = (props) => {
   const [displayEditBox, setDisplayEditBox] = useState(false);
@@ -258,6 +259,7 @@ const BoxDetail = (props) => {
 };
 
 export async function getServerSideProps(context) {
+  axios.defaults.headers = context.req.headers;
   const { params } = context;
 
   const boxId = params.boxId;

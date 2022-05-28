@@ -52,18 +52,4 @@ const MyApp = (props) => {
   );
 };
 
-MyApp.getInitialProps = async (appContext) => {
-  if (appContext.ctx.req) {
-    axios.defaults.headers = appContext.ctx.req.headers;
-  }
-
-  let pageProps = {};
-  if (appContext.Component.getInitialProps) {
-    pageProps = await appContext.Component.getInitialProps(appContext.ctx);
-  }
-  return {
-    pageProps,
-  };
-};
-
 export default MyApp;
