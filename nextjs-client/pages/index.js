@@ -32,7 +32,7 @@ const Home = (props) => {
     setDisplayCreateBox(false);
   };
 
-  if (boxes) {
+  if (!boxes) {
     return (
       <Container>
         <Grid container justifyContent="center" alignItems="center">
