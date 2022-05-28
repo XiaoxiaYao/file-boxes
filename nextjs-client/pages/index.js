@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   Box,
@@ -14,23 +14,11 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import CreateBox from '../components/createBox/CreateBox.component';
 
-const Home = () => {
-  const [boxes, setBoxes] = useState(null);
+const Home = (props) => {
   const [displayCreateBox, setDisplayCreateBox] = useState(false);
-  const [isLoadingData, setIsLoadingData] = useState(false);
 
   let router = useRouter();
-
-  const fetchBoxes = async () => {
-    setIsLoadingData(true);
-    const { data } = await listBoxes();
-    setBoxes(data);
-    setIsLoadingData(false);
-  };
-
-  useEffect(() => {
-    fetchBoxes();
-  }, []);
+  const { boxes } = props;
 
   const handleClickCard = (box) => {
     router.push(`${APPLICATION_ROUTES.BOX}/${box._id}`);
@@ -48,6 +36,14 @@ const Home = () => {
   const handleCloseCreateReview = () => {
     setDisplayCreateBox(false);
   };
+
+  if (!boxes) {
+    return (
+      <Box sx={{ display: 'flex' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Container>
@@ -70,16 +66,10 @@ const Home = () => {
             </Grid>
           </Grid>
         </Box>
-        {isLoadingData ? (
-          <Box sx={{ display: 'flex' }}>
-            <CircularProgress />
-          </Box>
-        ) : (
-          boxes &&
+        {boxes &&
           boxes.map((box) => (
             <BoxItem key={box._id} box={box} handleClick={handleClickCard} />
-          ))
-        )}
+          ))}
       </Box>
       {displayCreateBox && (
         <CreateBox
@@ -90,5 +80,16 @@ const Home = () => {
     </Container>
   );
 };
+
+export async function getStaticProps() {
+  const { data } = await listBoxes();
+
+  return {
+    props: {
+      boxes: data,
+    },
+    revalidate: 600,
+  };
+}
 
 export default Home;
