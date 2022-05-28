@@ -6,8 +6,15 @@ import { AuthContext } from '../contexts/authContext';
 import lightTheme from '../styles/theme/lightTheme';
 import Header from '../components/header/Header';
 import { currentUser } from '../Api';
+import NProgress from 'nprogress'; //nprogress module
+import 'nprogress/nprogress.css'; //styles of nprogress
+import Router from 'next/router';
 
 const clientSideEmotionCache = createEmotionCache();
+
+Router.events.on('routeChangeStart', () => NProgress.start());
+Router.events.on('routeChangeComplete', () => NProgress.done());
+Router.events.on('routeChangeError', () => NProgress.done());
 
 const MyApp = (props) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
