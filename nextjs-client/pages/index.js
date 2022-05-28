@@ -82,7 +82,7 @@ const Home = (props) => {
 };
 
 export async function getServerSideProps(ctx) {
-  axios.defaults.headers = ctx.req.headers;
+  // axios.defaults.headers = ctx.req.headers;
   const { data } = await listBoxes();
 
   return {
