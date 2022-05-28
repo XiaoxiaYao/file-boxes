@@ -23,9 +23,11 @@ export const signout = () => axios.post('/api/auth/sign-out/');
 export const currentUser = () => axios.get('/api/auth/current-user/');
 
 export const listBoxes = ({ headers }) => {
-  console.log(headers);
+  const cookieString = headers.cookie;
   return axios.get('/api/boxes/', {
-    headers,
+    headers: {
+      cookie: cookieString != undefined ? cookieString : '',
+    },
   });
 };
 
