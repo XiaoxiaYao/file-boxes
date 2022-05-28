@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Container,
-  Box,
-  Typography,
-  CircularProgress,
-  Grid,
-} from '@mui/material';
+import { Container, Box, Typography, Grid } from '@mui/material';
 import { listBoxes } from '../Api';
 import { APPLICATION_ROUTES } from '../Constants';
 import { useRouter } from 'next/router';
@@ -13,6 +7,7 @@ import BoxItem from '../components/boxItem/BoxItem.component';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import CreateBox from '../components/createBox/CreateBox.component';
+import Router from 'next/router';
 
 const Home = (props) => {
   const [displayCreateBox, setDisplayCreateBox] = useState(false);
@@ -30,18 +25,22 @@ const Home = (props) => {
 
   const handleBoxCreated = () => {
     setDisplayCreateBox(false);
-    fetchBoxes();
+    Router.reload();
   };
 
   const handleCloseCreateReview = () => {
     setDisplayCreateBox(false);
   };
 
-  if (!boxes) {
+  if (boxes) {
     return (
-      <Box sx={{ display: 'flex' }}>
-        <CircularProgress />
-      </Box>
+      <Container>
+        <Grid container justifyContent="center" alignItems="center">
+          <Grid item>
+            <Box p={2}>No box.</Box>
+          </Grid>
+        </Grid>
+      </Container>
     );
   }
 
