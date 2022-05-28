@@ -9,6 +9,7 @@ import { currentUser } from '../Api';
 import NProgress from 'nprogress'; //nprogress module
 import 'nprogress/nprogress.css'; //styles of nprogress
 import Router from 'next/router';
+import axios from 'axios';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -49,6 +50,20 @@ const MyApp = (props) => {
       </CacheProvider>
     </AuthContext.Provider>
   );
+};
+
+MyApp.getInitialProps = async (appContext) => {
+  if (appContext.ctx.req) {
+    axios.defaults.headers = appContext.ctx.req.headers;
+  }
+
+  let pageProps = {};
+  if (appContext.Component.getInitialProps) {
+    pageProps = await appContext.Component.getInitialProps(appContext.ctx);
+  }
+  return {
+    pageProps,
+  };
 };
 
 export default MyApp;

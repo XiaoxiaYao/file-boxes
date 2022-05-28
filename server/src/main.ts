@@ -39,7 +39,11 @@ async function bootstrap() {
 
   // Cors issue
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://file-boxes-frontend.vercel.app'],
+    origin: [
+      'http://localhost:3000',
+      'https://file-boxes-frontend.vercel.app',
+      'https://file-boxes.netlify.app',
+    ],
     methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD', 'DELETE', 'PATCH'],
     credentials: true,
     exposedHeaders: ['Set-Cookie'],
